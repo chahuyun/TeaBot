@@ -1,6 +1,7 @@
 package cn.chahuyun.teabot.core.bot;
 
 
+import cn.chahuyun.teabot.conf.bot.BotConfiguration;
 import cn.chahuyun.teabot.core.contact.Friend;
 
 /**

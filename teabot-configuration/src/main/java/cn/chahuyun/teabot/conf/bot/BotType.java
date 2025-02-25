@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.core.bot;
+package cn.chahuyun.teabot.conf.bot;
 
 import lombok.Getter;
 
@@ -14,6 +14,8 @@ public enum BotType {
     WECHAT("WeChat"),
 
     QQ("QQ");
+
+
 
     private final String type;
 

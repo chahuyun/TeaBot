@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.core.bot;
+package cn.chahuyun.teabot.conf.bot;
 
 
 import lombok.Getter;

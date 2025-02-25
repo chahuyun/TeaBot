@@ -1,5 +1,8 @@
 package cn.chahuyun.teabot.core.bot;
 
+import cn.chahuyun.teabot.conf.bot.BotConfiguration;
+import cn.chahuyun.teabot.conf.bot.BotType;
+
 /**
  *
  *
@@ -36,6 +39,14 @@ public abstract class AbstractBot implements Bot {
     @Override
     public boolean isOnline() {
         return false;
+    }
+
+    /**
+     * 获取机器人类型
+     * @return BotType
+     */
+    public BotType getType() {
+        return configuration.getType();
     }
 
 

@@ -1,5 +1,7 @@
 package cn.chahuyun.teabot.core.bot;
 
+import cn.chahuyun.teabot.conf.bot.BotConfiguration;
+
 /**
  * bot工厂
  *

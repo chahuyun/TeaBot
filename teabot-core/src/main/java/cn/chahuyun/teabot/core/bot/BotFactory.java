@@ -1,0 +1,19 @@
+package cn.chahuyun.teabot.core.bot;
+
+/**
+ * bot工厂
+ *
+ * @author Moyuyanli
+ * @date 2025-2-21 13:47
+ */
+public class BotFactory {
+
+    public static Bot newBot(BotConfiguration configuration) {
+        //todo 登录
+
+        WeChatBot bot = new WeChatBot(configuration, "");
+        //创建后应该管理起来
+        return bot;
+    }
+
+}

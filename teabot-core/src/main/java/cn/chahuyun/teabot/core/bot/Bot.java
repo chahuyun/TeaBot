@@ -39,4 +39,7 @@ public interface Bot extends ContactOrBot {
      */
     public Friend getFriend(String id);
 
+
+    //todo 发送消息的抽象方法
+
 }

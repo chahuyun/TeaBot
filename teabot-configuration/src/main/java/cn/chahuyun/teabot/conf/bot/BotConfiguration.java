@@ -38,5 +38,14 @@ public class BotConfiguration {
      */
     private String callback;
 
+    public BotConfiguration() {
+    }
 
+    public BotConfiguration(BotType type, String userId, String driveName, String baseUrl, String callback) {
+        this.type = type;
+        this.userId = userId;
+        this.driveName = driveName;
+        this.baseUrl = baseUrl;
+        this.callback = callback;
+    }
 }

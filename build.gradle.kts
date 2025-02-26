@@ -22,6 +22,8 @@ subprojects {
 
         implementation("org.slf4j:slf4j-simple:1.7.36") // 添加日志支持
 
+        implementation("cn.hutool:hutool-all:5.8.36")
+
         implementation("org.projectlombok:lombok:1.18.24")
         annotationProcessor("org.projectlombok:lombok:1.18.24")
 

@@ -11,10 +11,11 @@ import lombok.Getter;
 @Getter
 public enum BotType {
 
-    WECHAT("WeChat"),
+    PAD_PLUS("WeChat"),
 
-    QQ("QQ");
+    GEWE("WeChat"),
 
+    ONE_BOT("QQ");
 
 
     private final String type;

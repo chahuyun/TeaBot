@@ -1,0 +1,10 @@
+{
+  "server": {
+    "port": 8080
+  },
+  "data": {
+    "address": "localhost:3306/test",
+    "username": "root",
+    "password": "Zz123456"
+  }
+}

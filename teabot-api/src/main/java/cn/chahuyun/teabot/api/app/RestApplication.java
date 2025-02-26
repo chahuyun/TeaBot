@@ -2,6 +2,10 @@ package cn.chahuyun.teabot.api.app;
 
 
 import cn.chahuyun.teabot.api.app.web.AuthFilter;
+import cn.chahuyun.teabot.api.app.web.BotController;
+import cn.chahuyun.teabot.api.app.web.ExceptionHandle;
+import cn.chahuyun.teabot.conf.system.ConfigService;
+import cn.chahuyun.teabot.conf.system.entity.SystemConfig;
 import cn.chahuyun.teabot.repository.RepositoryLoader;
 import spark.Spark;
 
@@ -14,13 +18,11 @@ import spark.Spark;
 public class RestApplication {
 
     public static void init() {
-        Spark.port(8080);
+        SystemConfig config = ConfigService.getConfig();
+        Spark.port(config.getServer().getPort());
         Spark.before(AuthFilter::handle);
-
-        Spark.get("/hello", (req, res) -> {
-            String name = req.queryParams("name");
-            return "Hello, " + (name == null ? "World" : name) + "!";
-        });
+        Spark.path("/bot", BotController.getRoutes());
+        Spark.exception(Exception.class, ExceptionHandle::handle);
 
         Spark.get("/db/loader", (req, res) -> {
             String content = req.queryParams("id");

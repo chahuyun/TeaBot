@@ -18,6 +18,11 @@ public interface Friend extends ContactOrBot {
     public String getId();
 
     /**
+     * 用户名
+     * @return 用户名
+     */
+    public String getName();
+    /**
      * 所属bot
      * @return bot
      */

@@ -1,6 +1,8 @@
 package cn.chahuyun.teabot;
 
 import cn.chahuyun.teabot.api.app.RestApplication;
+import cn.chahuyun.teabot.conf.system.ConfigService;
+import cn.chahuyun.teabot.repository.RepositoryLoader;
 
 /**
  * bot启动类
@@ -11,6 +13,8 @@ import cn.chahuyun.teabot.api.app.RestApplication;
 public class TeaBot {
 
     public static void main(String[] args) {
+        ConfigService.load(TeaBot.class);
+        RepositoryLoader.load(TeaBot.class);
         //这里应该启动的是web服务，通过接口操作其他任务
         RestApplication.init();
     }

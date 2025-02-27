@@ -18,7 +18,7 @@ subprojects {
     }
 
     dependencies {
-        implementation("com.google.code.gson:gson:2.12.1")
+        implementation("com.google.code.gson:gson:2.9.0")
 
         implementation("org.slf4j:slf4j-simple:1.7.36") // 添加日志支持
 

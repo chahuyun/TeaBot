@@ -10,7 +10,7 @@ import cn.chahuyun.teabot.conf.bot.BotConfiguration;
  */
 public interface BotAdapter {
 
-    public boolean login(BotConfiguration configuration);
+    public boolean login();
 
     public boolean logout();
 

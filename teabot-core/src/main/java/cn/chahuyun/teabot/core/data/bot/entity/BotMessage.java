@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table("b_bot_messasge")
+@Table(name = "b_bot_messasge")
 public class BotMessage {
 
     @Id

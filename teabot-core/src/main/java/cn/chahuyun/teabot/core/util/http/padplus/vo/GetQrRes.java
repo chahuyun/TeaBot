@@ -1,5 +1,7 @@
 package cn.chahuyun.teabot.core.util.http.padplus.vo;
 
+import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -8,6 +10,7 @@ import java.util.Date;
  * @author Moyuyanli
  * @date 2025-2-27 14:44
  */
+@Data
 public class GetQrRes {
 
     private String QrBase64;

@@ -1,6 +1,7 @@
 package cn.chahuyun.teabot.core.adapter.bot;
 
 import cn.chahuyun.teabot.conf.bot.BotConfiguration;
+import cn.chahuyun.teabot.core.data.bot.WeChatUser;
 import cn.chahuyun.teabot.core.util.ImageUtil;
 import cn.chahuyun.teabot.core.util.http.HttpUtil;
 import cn.chahuyun.teabot.core.util.http.padplus.PadPlusHttpUtil;
@@ -8,6 +9,8 @@ import cn.chahuyun.teabot.core.util.http.padplus.PadPlusService;
 import cn.chahuyun.teabot.core.util.http.padplus.vo.CheckQrRes;
 import cn.chahuyun.teabot.core.util.http.padplus.vo.GetQrRes;
 import cn.hutool.cron.CronUtil;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import retrofit2.Retrofit;
 
@@ -27,12 +30,19 @@ import java.util.concurrent.atomic.AtomicReference;
  * @date 2025-2-26 17:17
  */
 @Slf4j
+
 public class PadPlusBotAdapter implements BotAdapter {
 
 
     private final Retrofit retrofit;
 
     private final BotConfiguration configuration;
+
+    @Setter
+    private String wxid;
+
+    @Getter
+    private WeChatUser user;
 
     public PadPlusBotAdapter(BotConfiguration configuration) {
         this.configuration = configuration;
@@ -84,7 +94,7 @@ public class PadPlusBotAdapter implements BotAdapter {
 
             AtomicReference<CheckQrRes> reference = new AtomicReference<>();
             AtomicBoolean isLogin = new AtomicBoolean(false);
-            CronUtil.schedule(uuid,"* * * * *", () -> {
+            CronUtil.schedule(uuid, "* * * * *", () -> {
                 if (isLogin.get()) {
                     CronUtil.remove(uuid);
                     return;
@@ -100,17 +110,17 @@ public class PadPlusBotAdapter implements BotAdapter {
 
             CheckQrRes res = reference.get();
 
-
-
+            user = res.getAcctSectResp();
+            wxid = user.getUserName();
+            ImageUtil.close(uuid);
 
             Thread.sleep(30 * 1000);
 
+            return true;
 
 
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             log.error(e.getMessage(), e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
         return false; // 或者根据实际情况返回true

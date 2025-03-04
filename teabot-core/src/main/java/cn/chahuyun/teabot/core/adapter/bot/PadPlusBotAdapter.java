@@ -116,7 +116,7 @@ public class PadPlusBotAdapter implements BotAdapter {
 
             // 等待，直到latch的计数变为0
             try {
-                latch.await(30L, TimeUnit.SECONDS);
+                latch.await(60L, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // 恢复中断状态
             }

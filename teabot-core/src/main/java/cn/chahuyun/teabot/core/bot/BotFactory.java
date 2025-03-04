@@ -13,11 +13,11 @@ public class BotFactory {
     public static Bot newBot(BotConfiguration configuration) {
         //todo 登录
 
-        WeChatBot bot = new WeChatBot(configuration, "");
-
-        BotContainer.addBot(bot);
+        WeChatBot bot = new WeChatBot(configuration, configuration.getUserId());
 
         //创建后应该管理起来
+        BotContainer.addBot(bot);
+
         return bot;
     }
 

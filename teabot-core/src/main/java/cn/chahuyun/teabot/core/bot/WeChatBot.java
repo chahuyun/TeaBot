@@ -20,6 +20,9 @@ public class WeChatBot extends AbstractBot {
 
     private final WeChatUser user;
 
+    private boolean isOnline;
+
+
     public WeChatBot(BotConfiguration configuration, String id) {
         super(configuration, id);
 
@@ -31,6 +34,7 @@ public class WeChatBot extends AbstractBot {
             throw new RuntimeException("创建bot失败!");
         }
 
+        isOnline = true;
         user = adapter.getUser();
     }
 
@@ -43,6 +47,12 @@ public class WeChatBot extends AbstractBot {
     @Override
     public Bot getBot() {
         return this;
+    }
+
+
+    @Override
+    public boolean isOnline() {
+        return isOnline;
     }
 
     /**

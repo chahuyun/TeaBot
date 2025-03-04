@@ -20,6 +20,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -29,6 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Moyuyanli
  * @date 2025-2-26 17:17
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 @Slf4j
 
 public class PadPlusBotAdapter implements BotAdapter {
@@ -91,35 +94,41 @@ public class PadPlusBotAdapter implements BotAdapter {
 
             ImageUtil.view(uuid, image);
 
-
+            CountDownLatch latch = new CountDownLatch(1);
             AtomicReference<CheckQrRes> reference = new AtomicReference<>();
             AtomicBoolean isLogin = new AtomicBoolean(false);
+
             CronUtil.schedule(uuid, "* * * * *", () -> {
                 if (isLogin.get()) {
                     CronUtil.remove(uuid);
+                    latch.countDown(); // 通知主线程继续
                     return;
                 }
 
                 reference.set(PadPlusHttpUtil.checkQrCode(service, uuid));
                 if (reference.get() != null) {
                     isLogin.set(true);
+                    latch.countDown(); // 通知主线程继续
                 }
             });
 
             CronUtil.start();
 
-            CheckQrRes res = reference.get();
+            // 等待，直到latch的计数变为0
+            try {
+                latch.await(30L, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // 恢复中断状态
+            }
 
+            CheckQrRes res = reference.get();
             user = res.getAcctSectResp();
             wxid = user.getUserName();
             ImageUtil.close(uuid);
-
-            Thread.sleep(30 * 1000);
-
             return true;
 
 
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
 

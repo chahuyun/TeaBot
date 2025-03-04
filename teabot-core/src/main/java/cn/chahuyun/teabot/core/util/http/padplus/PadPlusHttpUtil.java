@@ -56,10 +56,10 @@ public class PadPlusHttpUtil {
                     Gson gson = new GsonBuilder()
                             .setDateFormat("yyyy-MM-dd HH:mm:ss") // 根据你的日期格式调整
                             .create();
-                    if (body.getCode() == 0 && body.getData() != null) {
+//                    log.debug("body {}",body);
+                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("acctSectResp")) {
                         return gson.fromJson(body.getData(), CheckQrRes.class);
                     }
-                    log.info("code {}", body.getCode());
                 }
             }
         } catch (IOException e) {

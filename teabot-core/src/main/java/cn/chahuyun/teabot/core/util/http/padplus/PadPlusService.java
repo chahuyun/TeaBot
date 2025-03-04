@@ -20,7 +20,7 @@ public interface PadPlusService {
      * @param params 参数
      * @return Call<String>
      */
-    @POST("/Login/GetQR")
+    @POST("api/Login/GetQR")
     Call<Results> getQr(@Body GetQrReq params);
 
     /**
@@ -28,7 +28,7 @@ public interface PadPlusService {
      * @param uuid uuid
      * @return 结果
      */
-    @POST("/Login/CheckQR")
+    @POST("api/Login/CheckQR")
     Call<Results> checkQr(@Query("uuid") String uuid);
 
 }

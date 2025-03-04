@@ -14,6 +14,9 @@ public class BotFactory {
         //todo 登录
 
         WeChatBot bot = new WeChatBot(configuration, "");
+
+        BotContainer.addBot(bot);
+
         //创建后应该管理起来
         return bot;
     }

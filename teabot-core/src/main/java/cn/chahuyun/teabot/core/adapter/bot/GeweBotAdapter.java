@@ -9,8 +9,10 @@ import cn.chahuyun.teabot.conf.bot.BotConfiguration;
  * @date 2025-2-26 17:30
  */
 public class GeweBotAdapter implements BotAdapter{
+
+
     @Override
-    public boolean login(BotConfiguration configuration) {
+    public boolean login() {
         return false;
     }
 

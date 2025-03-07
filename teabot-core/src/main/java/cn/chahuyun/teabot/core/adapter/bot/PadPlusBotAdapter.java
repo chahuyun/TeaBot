@@ -2,6 +2,8 @@ package cn.chahuyun.teabot.core.adapter.bot;
 
 import cn.chahuyun.teabot.conf.bot.BotConfiguration;
 import cn.chahuyun.teabot.core.data.bot.WeChatUser;
+import cn.chahuyun.teabot.core.event.MessageEvent;
+import cn.chahuyun.teabot.core.message.MessageChain;
 import cn.chahuyun.teabot.core.util.ImageUtil;
 import cn.chahuyun.teabot.core.util.http.HttpUtil;
 import cn.chahuyun.teabot.core.util.http.padplus.PadPlusHttpUtil;
@@ -150,9 +152,13 @@ public class PadPlusBotAdapter implements BotAdapter {
         return false;
     }
 
+    /**
+     * 消息通道
+     *
+     * @return 任意消息事件类型
+     */
     @Override
-    public boolean messageSource() {
-        //心跳调用检查新消息
-        return false;
+    public <E extends MessageEvent> E messageSource() {
+        return null;
     }
 }

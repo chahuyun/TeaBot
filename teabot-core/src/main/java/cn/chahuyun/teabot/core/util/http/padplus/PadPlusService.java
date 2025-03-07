@@ -2,6 +2,7 @@ package cn.chahuyun.teabot.core.util.http.padplus;
 
 import cn.chahuyun.teabot.core.util.http.padplus.vo.GetQrReq;
 import cn.chahuyun.teabot.core.util.http.padplus.vo.Results;
+import cn.chahuyun.teabot.core.util.http.padplus.vo.SyncMessageReq;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -30,5 +31,13 @@ public interface PadPlusService {
      */
     @POST("api/Login/CheckQR")
     Call<Results> checkQr(@Query("uuid") String uuid);
+
+    /**
+     * 同步消息
+     * @param req 请求
+     * @return 结果
+     */
+    @POST("api/Msg/Sync")
+    Call<Results> syncMessage(@Body SyncMessageReq req);
 
 }

@@ -1,6 +1,7 @@
 package cn.chahuyun.teabot.core.adapter.bot;
 
 import cn.chahuyun.teabot.conf.bot.BotConfiguration;
+import cn.chahuyun.teabot.core.event.MessageEvent;
 
 /**
  *
@@ -31,9 +32,13 @@ public class GeweBotAdapter implements BotAdapter{
         return false;
     }
 
+    /**
+     * 消息通道
+     *
+     * @return 任意消息事件类型
+     */
     @Override
-    public boolean messageSource() {
-        //回调接口返回消息
-        return false;
+    public <E extends MessageEvent> E messageSource() {
+        return null;
     }
 }

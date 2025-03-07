@@ -17,7 +17,7 @@ public interface Event {
     /**
      * 拦截事件
      */
-    void intercept();
+    void intercept() ;
 
 
 }

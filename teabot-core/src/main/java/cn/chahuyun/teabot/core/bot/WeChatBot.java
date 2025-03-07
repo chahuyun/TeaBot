@@ -20,7 +20,7 @@ public class WeChatBot extends AbstractBot {
 
     private final WeChatUser user;
 
-    private boolean isOnline;
+    private final boolean isOnline;
 
 
     public WeChatBot(BotConfiguration configuration, String id) {
@@ -53,6 +53,16 @@ public class WeChatBot extends AbstractBot {
     @Override
     public boolean isOnline() {
         return isOnline;
+    }
+
+    /**
+     * 消息构建
+     *
+     * @return true 成功
+     */
+    @Override
+    public boolean messageBuild() {
+        return false;
     }
 
     /**

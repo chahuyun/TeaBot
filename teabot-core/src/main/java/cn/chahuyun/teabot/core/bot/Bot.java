@@ -33,6 +33,12 @@ public interface Bot extends ContactOrBot {
 
 
     /**
+     * 消息构建
+     * @return true 成功
+     */
+    boolean messageBuild();
+
+    /**
      * 获取好友
      * @param id id
      * @return Friend 好友

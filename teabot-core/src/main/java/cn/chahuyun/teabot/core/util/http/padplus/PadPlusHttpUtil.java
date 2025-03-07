@@ -1,10 +1,7 @@
 package cn.chahuyun.teabot.core.util.http.padplus;
 
 import cn.chahuyun.teabot.conf.bot.BotConfiguration;
-import cn.chahuyun.teabot.core.util.http.padplus.vo.CheckQrRes;
-import cn.chahuyun.teabot.core.util.http.padplus.vo.GetQrReq;
-import cn.chahuyun.teabot.core.util.http.padplus.vo.GetQrRes;
-import cn.chahuyun.teabot.core.util.http.padplus.vo.Results;
+import cn.chahuyun.teabot.core.util.http.padplus.vo.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -12,14 +9,18 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
+import static cn.chahuyun.teabot.core.util.http.HttpUtil.gson;
+
 /**
  *
  *
  * @author Moyuyanli
  * @date 2025-2-27 14:35
  */
+@SuppressWarnings("SpellCheckingInspection")
 @Slf4j
 public class PadPlusHttpUtil {
+
 
 
     public static GetQrRes getQrCode(PadPlusService service, BotConfiguration configuration) {
@@ -35,9 +36,6 @@ public class PadPlusHttpUtil {
             if (execute.isSuccessful()) {
                 Results body = execute.body();
                 if (body != null) {
-                    Gson gson = new GsonBuilder()
-                            .setDateFormat("yyyy-MM-dd HH:mm:ss") // 根据你的日期格式调整
-                            .create();
                     return gson.fromJson(body.getData(), GetQrRes.class);
                 }
             }
@@ -53,12 +51,27 @@ public class PadPlusHttpUtil {
             if (execute.isSuccessful()) {
                 Results body = execute.body();
                 if (body != null) {
-                    Gson gson = new GsonBuilder()
-                            .setDateFormat("yyyy-MM-dd HH:mm:ss") // 根据你的日期格式调整
-                            .create();
 //                    log.debug("body {}",body);
                     if (body.getCode() == 0 && body.getData() != null && body.getData().has("acctSectResp")) {
                         return gson.fromJson(body.getData(), CheckQrRes.class);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+
+    public static SyncMessageRes syncMessage(PadPlusService service, String wxid) {
+        try {
+            Response<Results> execute = service.syncMessage(new SyncMessageReq(wxid)).execute();
+            if (execute.isSuccessful()) {
+                Results body = execute.body();
+                if (body != null) {
+                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("AddMsgs")) {
+                        return gson.fromJson(body.getData(), SyncMessageRes.class);
                     }
                 }
             }

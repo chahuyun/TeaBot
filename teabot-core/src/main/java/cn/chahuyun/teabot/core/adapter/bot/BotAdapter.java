@@ -1,6 +1,8 @@
 package cn.chahuyun.teabot.core.adapter.bot;
 
 import cn.chahuyun.teabot.conf.bot.BotConfiguration;
+import cn.chahuyun.teabot.core.event.MessageEvent;
+import cn.chahuyun.teabot.core.message.MessageChain;
 
 /**
  * bot适配器
@@ -20,9 +22,9 @@ public interface BotAdapter {
 
     /**
      * 消息通道
-     * @return
+     * @return 任意消息事件类型
      */
-    public boolean messageSource();
+    public <E extends MessageEvent> E messageSource();
 
 
 

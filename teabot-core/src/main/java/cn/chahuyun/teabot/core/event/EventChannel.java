@@ -54,7 +54,7 @@ public class EventChannel {
     public class SubscriptionBuilder<E extends Event> {
         private final Class<E> eventType;
         private Predicate<E> filter = e -> true;
-        private int priority = 0;
+        private EventPriorityEnum priority = EventPriorityEnum.NORMAL;
         private EventHandler<E> handler;
 
         public SubscriptionBuilder(Class<E> eventType) {
@@ -66,7 +66,7 @@ public class EventChannel {
             return this;
         }
 
-        public SubscriptionBuilder<E> priority(int priority) {
+        public SubscriptionBuilder<E> priority(EventPriorityEnum priority) {
             this.priority = priority;
             return this;
         }
@@ -86,20 +86,16 @@ public class EventChannel {
         }
     }
 
-    // 处理器注册信息封装
-    private static class HandlerRegistration<E extends Event> {
-        private final Predicate<E> filter;
-        private final int priority;
-        private final EventHandler<E> handler;
-
-        HandlerRegistration(Predicate<E> filter, int priority, EventHandler<E> handler) {
-            this.filter = filter;
-            this.priority = priority;
-            this.handler = handler;
-        }
+    /**
+     *  处理器注册信息封装
+     * @param <E>
+     */
+    private record HandlerRegistration<E extends Event>(Predicate<E> filter,
+                                                        EventPriorityEnum priority,
+                                                        EventHandler<E> handler) {
 
         int getPriority() {
-            return priority;
+            return priority.getPriority();
         }
     }
 }

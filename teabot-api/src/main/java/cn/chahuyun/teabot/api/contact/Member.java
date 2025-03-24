@@ -10,4 +10,7 @@ public interface Member extends ContactOrBot {
 
     Group getGroup();
 
+
+    //todo 添加好友
+
 }

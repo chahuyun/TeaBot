@@ -27,6 +27,8 @@ public class EventChannel {
         return new SubscriptionBuilder<>(eventType);
     }
 
+    //todo 事件通道
+
     // 触发事件
     public void fire(Event event) {
         Class<? extends Event> eventType = event.getClass();

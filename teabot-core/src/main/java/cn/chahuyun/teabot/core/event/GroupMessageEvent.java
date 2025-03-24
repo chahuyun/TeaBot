@@ -13,6 +13,9 @@ import cn.chahuyun.teabot.api.message.MessageChain;
  * @date 2025-3-6 14:59
  */
 public class GroupMessageEvent implements MessageEvent {
+
+    //todo
+
     /**
      * 获取bot
      *

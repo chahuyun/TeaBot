@@ -12,7 +12,7 @@ repositories {
 dependencies {
     implementation("cn.chahuyun:hibernate-plus:1.0.15")
 
-    implementation(project(":teabot-configuration"))
-    implementation(project(":teabot-core"))
+    implementation(project(":teabot-common"))
+    implementation(project(":teabot-api"))
 }
 

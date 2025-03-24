@@ -1,9 +1,10 @@
 package cn.chahuyun.teabot.core.event;
 
-import cn.chahuyun.teabot.core.bot.Bot;
-import cn.chahuyun.teabot.core.contact.Contact;
-import cn.chahuyun.teabot.core.contact.User;
-import cn.chahuyun.teabot.core.message.MessageChain;
+import cn.chahuyun.teabot.api.contact.Bot;
+import cn.chahuyun.teabot.api.contact.Contact;
+import cn.chahuyun.teabot.api.contact.User;
+import cn.chahuyun.teabot.api.event.MessageEvent;
+import cn.chahuyun.teabot.api.message.MessageChain;
 
 /**
  * 好友消息事件
@@ -11,7 +12,7 @@ import cn.chahuyun.teabot.core.message.MessageChain;
  * @author Moyuyanli
  * @date 2025-3-6 15:00
  */
-public class FriendMessageEvent implements MessageEvent{
+public class FriendMessageEvent implements MessageEvent {
     /**
      * 获取bot
      *

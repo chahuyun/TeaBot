@@ -1,24 +1,24 @@
 package cn.chahuyun.teabot.core.bot;
 
-import cn.chahuyun.teabot.conf.bot.BotConfiguration;
+import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.api.config.BotConfig;
+import cn.chahuyun.teabot.api.contact.Bot;
 
-/**
- * bot工厂
- *
- * @author Moyuyanli
- * @date 2025-2-21 13:47
- */
 public class BotFactory {
 
-    public static Bot newBot(BotConfiguration configuration) {
-        //todo 登录
-
-        WeChatBot bot = new WeChatBot(configuration, configuration.getUserId());
-
-        //创建后应该管理起来
-        BotContainer.addBot(bot);
-
+    public static Bot newBot(BotConfig config, BotAdapter adapter) {
+        AbstractBot bot = createBotInstance(config, adapter);
+        BotContainer.addBot(bot); // 确保所有 Bot 都被添加到容器
         return bot;
     }
 
+    private static AbstractBot createBotInstance(BotConfig config, BotAdapter adapter) {
+        switch (config.getBotType()) {
+            case PAD_PLUS:
+                return new WeChatBot(config, adapter);
+            // 其他 BotType 的实现
+            default:
+                throw new IllegalArgumentException("不支持的 BotType: " + config.getBotType());
+        }
+    }
 }

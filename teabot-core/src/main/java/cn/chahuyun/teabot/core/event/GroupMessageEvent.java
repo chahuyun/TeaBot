@@ -1,9 +1,10 @@
 package cn.chahuyun.teabot.core.event;
 
-import cn.chahuyun.teabot.core.bot.Bot;
-import cn.chahuyun.teabot.core.contact.Contact;
-import cn.chahuyun.teabot.core.contact.User;
-import cn.chahuyun.teabot.core.message.MessageChain;
+import cn.chahuyun.teabot.api.contact.Bot;
+import cn.chahuyun.teabot.api.contact.Group;
+import cn.chahuyun.teabot.api.contact.User;
+import cn.chahuyun.teabot.api.event.MessageEvent;
+import cn.chahuyun.teabot.api.message.MessageChain;
 
 /**
  * 群消息事件
@@ -11,7 +12,7 @@ import cn.chahuyun.teabot.core.message.MessageChain;
  * @author Moyuyanli
  * @date 2025-3-6 14:59
  */
-public class GroupMessageEvent implements MessageEvent{
+public class GroupMessageEvent implements MessageEvent {
     /**
      * 获取bot
      *
@@ -41,7 +42,7 @@ public class GroupMessageEvent implements MessageEvent{
     }
 
     @Override
-    public Contact getSubject() {
+    public Group getSubject() {
         return null;
     }
 

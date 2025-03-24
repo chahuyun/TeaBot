@@ -1,6 +1,6 @@
 package cn.chahuyun.teabot.core.event.lamda;
 
-import cn.chahuyun.teabot.core.event.Event;
+import cn.chahuyun.teabot.api.event.Event;
 
 /**
  *

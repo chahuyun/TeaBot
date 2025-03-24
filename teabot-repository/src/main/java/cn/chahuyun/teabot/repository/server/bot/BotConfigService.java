@@ -1,7 +1,7 @@
 package cn.chahuyun.teabot.repository.server.bot;
 
 import cn.chahuyun.hibernateplus.HibernateFactory;
-import cn.chahuyun.teabot.core.data.bot.entity.BotConfig;
+import cn.chahuyun.teabot.repository.bot.entity.BotConfigEntity;
 
 /**
  *
@@ -11,18 +11,20 @@ import cn.chahuyun.teabot.core.data.bot.entity.BotConfig;
  */
 public class BotConfigService {
 
-    public static BotConfig addBotConfig(BotConfig config) {
+    public static BotConfigEntity addBotConfig(BotConfigEntity config) {
         return HibernateFactory.merge(config);
     }
 
-
-    public static BotConfig getBotConfig(Integer id) {
-        HibernateFactory.selectListByHql(BotConfig.class, "from BotConfig where id = ?", Map.of("id", id))
-
-
-        return HibernateFactory.selectOne(BotConfig.class, id);
+    public static BotConfigEntity getBotConfig(String botId) {
+        return HibernateFactory.selectOne(BotConfigEntity.class, "botId", botId);
+    }
 
 
+    public static BotConfigEntity getBotConfig(Integer id) {
+//        HibernateFactory.selectListByHql(BotConfigEntity.class, "from BotConfig where id = ?", Map.of("id", id));
+
+
+        return HibernateFactory.selectOne(BotConfigEntity.class, id);
     }
 
 }

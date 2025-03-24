@@ -1,5 +1,6 @@
 package cn.chahuyun.teabot.core.event;
 
+import cn.chahuyun.teabot.api.event.Event;
 import cn.chahuyun.teabot.core.event.lamda.EventChainContext;
 import cn.chahuyun.teabot.core.event.lamda.EventHandler;
 

@@ -10,10 +10,6 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":teabot-api"))
     implementation(project(":teabot-core"))
-    implementation(project(":teabot-repository"))
-    implementation(project(":teabot-configuration"))
-
-
+    implementation(project(":teabot-web"))
 }

@@ -1,10 +1,11 @@
 package cn.chahuyun.teabot.core.bot;
 
 
-import cn.chahuyun.teabot.conf.bot.BotConfiguration;
-import cn.chahuyun.teabot.core.adapter.bot.PadPlusBotAdapter;
-import cn.chahuyun.teabot.core.contact.Friend;
-import cn.chahuyun.teabot.core.data.bot.WeChatUser;
+import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.api.config.BotConfig;
+import cn.chahuyun.teabot.api.contact.Bot;
+import cn.chahuyun.teabot.api.contact.Friend;
+import cn.chahuyun.teabot.conf.bot.BotType;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,53 +17,52 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class WeChatBot extends AbstractBot {
 
-    private final PadPlusBotAdapter adapter;
-
-    private final WeChatUser user;
-
     private final boolean isOnline;
 
+    private String name;
 
-    public WeChatBot(BotConfiguration configuration, String id) {
-        super(configuration, id);
+    private String avatar;
 
-        //todo 类型校验
+    public WeChatBot(BotConfig config, BotAdapter adapter) {
+        super(config.getUserId(), adapter, BotType.PAD_PLUS);
 
-        adapter = new PadPlusBotAdapter(configuration);
-        if (!adapter.login()) {
+        if (!this.getAdapter().login()) {
             log.error("登录失败！");
             throw new RuntimeException("创建bot失败!");
         }
 
         isOnline = true;
-        user = adapter.getUser();
     }
 
 
-    @Override
-    public String getId() {
-        return user.getUserName();
-    }
-
+    /**
+     * 所属bot
+     *
+     * @return bot
+     */
     @Override
     public Bot getBot() {
         return this;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
-    public boolean isOnline() {
-        return isOnline;
+    public String getAvatar() {
+        return avatar;
     }
 
     /**
-     * 消息构建
+     * 是否在线
      *
-     * @return true 成功
+     * @return true 在线
      */
     @Override
-    public boolean messageBuild() {
-        return false;
+    public boolean isOnline() {
+        return isOnline;
     }
 
     /**
@@ -73,6 +73,6 @@ public class WeChatBot extends AbstractBot {
      */
     @Override
     public Friend getFriend(String id) {
-        return null;
+        return getAdapter().getFriend(id);
     }
 }

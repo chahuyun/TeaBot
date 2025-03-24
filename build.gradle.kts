@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("java-library")
 }
 
 group = "cn.chahuyun"
@@ -12,6 +13,7 @@ repositories {
 subprojects {
     // 在每个子项目中应用java插件
     apply(plugin = "java")
+    apply(plugin = "java-library")
 
     repositories {
         mavenCentral()

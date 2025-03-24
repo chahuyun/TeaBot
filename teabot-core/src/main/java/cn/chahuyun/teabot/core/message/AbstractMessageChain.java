@@ -1,5 +1,8 @@
 package cn.chahuyun.teabot.core.message;
 
+import cn.chahuyun.teabot.api.message.MessageChain;
+import cn.chahuyun.teabot.api.message.SingleMessage;
+
 import java.util.ArrayList;
 import java.util.Collection;
 

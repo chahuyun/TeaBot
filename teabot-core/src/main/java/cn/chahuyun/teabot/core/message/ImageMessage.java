@@ -3,13 +3,18 @@ package cn.chahuyun.teabot.core.message;
 import cn.chahuyun.teabot.api.message.Message;
 import cn.chahuyun.teabot.api.message.SingleMessage;
 
+import java.util.function.Function;
+
 /**
- * 文本消息
+ *
  *
  * @author Moyuyanli
- * @date 2025-3-18 16:15
+ * @date 2025-3-24 17:31
  */
-public class PlanMessage implements Message, SingleMessage {
+public class ImageMessage extends AbstractMessageKey<ImageMessage> implements Message, SingleMessage {
+    public ImageMessage(Function<SingleMessage, ImageMessage> safeCastFunction) {
+        super(safeCastFunction);
+    }
 
     /**
      * 以文本形式返回消息

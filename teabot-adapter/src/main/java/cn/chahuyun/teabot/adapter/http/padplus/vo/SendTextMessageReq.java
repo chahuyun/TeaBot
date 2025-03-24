@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.adapter.http.padplus;
+package cn.chahuyun.teabot.adapter.http.padplus.vo;
 
 import lombok.Data;
 

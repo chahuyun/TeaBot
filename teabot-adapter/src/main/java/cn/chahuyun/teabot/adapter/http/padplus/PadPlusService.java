@@ -40,4 +40,9 @@ public interface PadPlusService {
     @POST("api/Msg/Sync")
     Call<Results> syncMessage(@Body SyncMessageReq req);
 
+
+    @POST("api/Msg/SendTxt")
+    Call<Results> sendTextMessage(@Body SyncMessageReq req);
+
+
 }

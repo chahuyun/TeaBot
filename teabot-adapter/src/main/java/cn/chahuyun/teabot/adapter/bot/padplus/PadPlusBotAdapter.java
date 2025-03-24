@@ -8,6 +8,7 @@ import cn.chahuyun.teabot.adapter.http.padplus.PadPlusHttpUtil;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusService;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.CheckQrRes;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.GetQrRes;
+import cn.chahuyun.teabot.api.message.SingleMessage;
 import cn.chahuyun.teabot.util.ImageUtil;
 import cn.hutool.cron.CronUtil;
 import lombok.Setter;
@@ -113,6 +114,12 @@ public class PadPlusBotAdapter implements BotAdapter {
      */
     @Override
     public boolean sendMessage(MessageChain message) {
+        for (SingleMessage singleMessage : message) {
+            if (singleMessage instanceof Plain) {
+
+            }
+        }
+
         return false;
     }
 
@@ -122,6 +129,9 @@ public class PadPlusBotAdapter implements BotAdapter {
     @Override
     public void listeningMessages() {
 
+
+        //todo 1.文本消息监听
+        //todo 2.进群事件
     }
 
     /**
@@ -135,6 +145,10 @@ public class PadPlusBotAdapter implements BotAdapter {
         return null;
     }
 
+
+    private void contentHandle() {
+
+    }
 
     private BufferedImage processQRImage(String qrBase64, String userId, String uuid) throws IOException {
         if (qrBase64.startsWith("data:image/jpg;base64,")) {

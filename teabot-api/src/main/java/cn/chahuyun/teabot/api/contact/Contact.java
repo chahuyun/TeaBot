@@ -1,5 +1,7 @@
 package cn.chahuyun.teabot.api.contact;
 
+import cn.chahuyun.teabot.api.message.MessageChain;
+
 /**
  * 联系人
  *
@@ -8,6 +10,10 @@ package cn.chahuyun.teabot.api.contact;
  */
 public interface Contact extends ContactOrBot{
 
-
+    /**
+     * 主动发送消息
+     * @param message 消息
+     */
+    void sendMessage(MessageChain message);
 
 }

@@ -4,12 +4,14 @@ import cn.chahuyun.teabot.adapter.http.padplus.vo.SendTextMessageReq;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.SendTextMessageRes;
 import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.adapter.http.HttpUtil;
+import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
 import cn.chahuyun.teabot.api.message.MessageChain;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusHttpUtil;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusService;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.CheckQrRes;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.GetQrRes;
+import cn.chahuyun.teabot.api.message.MessageReceipt;
 import cn.chahuyun.teabot.api.message.SingleMessage;
 import cn.chahuyun.teabot.message.MessageKey;
 import cn.chahuyun.teabot.util.ImageUtil;
@@ -112,28 +114,27 @@ public class PadPlusBotAdapter implements BotAdapter {
     /**
      * 发送文本消息
      *
-     * @param message 消息
+     * @param  receipt
      * @return true 成功
      */
     @Override
-    public boolean sendMessage(MessageChain message) {
-        for (SingleMessage singleMessage : message) {
+    public <C extends Contact> boolean sendMessage(MessageReceipt<C> receipt) {
+        for (SingleMessage singleMessage : receipt.getMessageChain()) {
             if (singleMessage.key().equals(MessageKey.PLAIN_TEXT)) {
                 SendTextMessageReq req = new SendTextMessageReq();
                 req.setContent(singleMessage.content());
                 req.setWxid(wxid);
-                req.setToWxid();
-                req.setAt();
-                req.setType();
-                PadPlusHttpUtil.SendMessage()
-
-
-
-
+                req.setToWxid(receipt.getTarget().getId());
+                // TODO: 2025/3/25 处理@消息
+                req.setType(0);
+                SendTextMessageRes sendTextMessageRes = PadPlusHttpUtil.SendMessage(service, req);
+                if (sendTextMessageRes.getCode()==0) {
+                    return true;
+                }
             }
-        }
 
-        return false;
+            return false;
+        }
     }
 
     /**

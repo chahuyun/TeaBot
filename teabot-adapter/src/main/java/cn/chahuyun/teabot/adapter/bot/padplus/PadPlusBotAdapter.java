@@ -1,29 +1,26 @@
 package cn.chahuyun.teabot.adapter.bot.padplus;
 
-import cn.chahuyun.teabot.adapter.http.padplus.vo.SendTextMessageReq;
-import cn.chahuyun.teabot.adapter.http.padplus.vo.SendTextMessageRes;
-import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.adapter.bot.WeChatUser;
 import cn.chahuyun.teabot.adapter.http.HttpUtil;
-import cn.chahuyun.teabot.api.contact.Contact;
-import cn.chahuyun.teabot.api.contact.Friend;
-import cn.chahuyun.teabot.api.message.MessageChain;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusHttpUtil;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusService;
-import cn.chahuyun.teabot.adapter.http.padplus.vo.CheckQrRes;
-import cn.chahuyun.teabot.adapter.http.padplus.vo.GetQrRes;
+import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
+import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.api.contact.Contact;
+import cn.chahuyun.teabot.api.contact.Friend;
 import cn.chahuyun.teabot.api.message.MessageReceipt;
 import cn.chahuyun.teabot.api.message.SingleMessage;
 import cn.chahuyun.teabot.message.MessageKey;
 import cn.chahuyun.teabot.util.ImageUtil;
 import cn.hutool.cron.CronUtil;
-import lombok.Setter;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import retrofit2.Response;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -40,14 +37,31 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class PadPlusBotAdapter implements BotAdapter {
 
-    private final PadPlusService service;
+    private transient PadPlusService service;
     private final PadPlusBotConfig config;
 
-    @Setter
+    @Getter
+    private WeChatUser user;
+
+    @Getter
     private String wxid;
 
-//    @Getter
-//    private WeChatUser user;
+
+    // 自定义序列化
+    @Serial
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+    }
+
+    // 自定义反序列化
+    @Serial
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        // 重新初始化不可序列化的字段
+        this.service = HttpUtil.getRetrofit(config.getBaseUrl()).create(PadPlusService.class);
+        // 重新注册定时任务（如监听消息的 CronUtil）
+    }
+
 
     public PadPlusBotAdapter(PadPlusBotConfig config) {
         this.config = config;
@@ -93,8 +107,8 @@ public class PadPlusBotAdapter implements BotAdapter {
             }
 
             CheckQrRes res = reference.get();
-//            user = res.getAcctSectResp();
-//            wxid = user.getUserName();
+            user = res.getAcctSectResp();
+            wxid = user.getUserName();
             ImageUtil.close(uuid);
             return true;
 
@@ -120,7 +134,7 @@ public class PadPlusBotAdapter implements BotAdapter {
     @Override
     public <C extends Contact> boolean sendMessage(MessageReceipt<C> receipt) {
         for (SingleMessage singleMessage : receipt.getMessageChain()) {
-            if (singleMessage.key().equals(MessageKey.PLAIN_TEXT)) {
+            if (singleMessage.key().equals(MessageKey.PLAIN_TEXT.getType())) {
                 SendTextMessageReq req = new SendTextMessageReq();
                 req.setContent(singleMessage.content());
                 req.setWxid(wxid);
@@ -128,13 +142,12 @@ public class PadPlusBotAdapter implements BotAdapter {
                 // TODO: 2025/3/25 处理@消息
                 req.setType(0);
                 SendTextMessageRes sendTextMessageRes = PadPlusHttpUtil.SendMessage(service, req);
-                if (sendTextMessageRes.getCode()==0) {
+                if (sendTextMessageRes != null && sendTextMessageRes.getCode() == 0) {
                     return true;
                 }
             }
-
-            return false;
         }
+        return false;
     }
 
     /**
@@ -142,7 +155,15 @@ public class PadPlusBotAdapter implements BotAdapter {
      */
     @Override
     public void listeningMessages() {
+        CronUtil.schedule(getWxid(), "* * * * *", () -> {
+            try {
+                Response<Results> execute = service.syncMessage(new SyncMessageReq(wxid)).execute();
 
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         //todo 1.文本消息监听
         //todo 2.进群事件

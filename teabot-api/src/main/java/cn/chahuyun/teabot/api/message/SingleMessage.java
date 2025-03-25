@@ -8,11 +8,24 @@ package cn.chahuyun.teabot.api.message;
  */
 public interface SingleMessage extends Message {
 
+
     /**
-     * 返回这个消息类型的类型名称
-     * @return 类型名称
+     * 获取消息类型
+     * @return MessageKey
      */
-    String key();
+    MessageKey getType();
 
+    /**
+     * 类型转换
+     * @param type 类型
+     * @return 转换消息类型
+     */
 
+    default <T> T as(Class<T> type) {
+        if (type.isInstance(this)) {
+            return type.cast(this);
+        }
+        return null;
+    }
 }
+

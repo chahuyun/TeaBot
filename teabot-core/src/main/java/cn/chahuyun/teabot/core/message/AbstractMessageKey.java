@@ -11,30 +11,15 @@ import java.util.function.Function;
  * @author Moyuyanli
  * @date 2025-3-6 15:44
  */
-public abstract class AbstractMessageKey<M extends SingleMessage> implements MessageKey<M>, SingleMessage {
-    private final Function<SingleMessage, M> safeCastFunction;
+public abstract class AbstractMessageKey implements SingleMessage {
+    protected final MessageKey type;
 
-
-    public AbstractMessageKey(Function<SingleMessage, M> safeCastFunction) {
-        this.safeCastFunction = safeCastFunction;
+    public AbstractMessageKey(MessageKey type) {
+        this.type = type;
     }
 
     @Override
-    public M safeCast(SingleMessage message) {
-        return safeCastFunction.apply(message);
+    public MessageKey getType() {
+        return type;
     }
-
-    /**
-     * 返回泛型 M 的类型名称
-     */
-    @Override
-    public String key() {
-        // 获取当前类的泛型参数类型
-        Class<?> clazz = getClass();
-        while (!clazz.getSuperclass().equals(AbstractMessageKey.class)) {
-            clazz = clazz.getSuperclass();
-        }
-        return clazz.getSimpleName(); // 返回类名
-    }
-
 }

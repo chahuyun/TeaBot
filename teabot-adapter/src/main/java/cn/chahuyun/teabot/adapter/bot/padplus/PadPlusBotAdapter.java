@@ -9,8 +9,8 @@ import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
 import cn.chahuyun.teabot.api.message.MessageReceipt;
+import cn.chahuyun.teabot.api.message.PlainText;
 import cn.chahuyun.teabot.api.message.SingleMessage;
-import cn.chahuyun.teabot.message.MessageKey;
 import cn.chahuyun.teabot.util.ImageUtil;
 import cn.hutool.cron.CronUtil;
 import lombok.Getter;
@@ -134,18 +134,16 @@ public class PadPlusBotAdapter implements BotAdapter {
     @Override
     public <C extends Contact> boolean sendMessage(MessageReceipt<C> receipt) {
         for (SingleMessage singleMessage : receipt.getMessageChain()) {
-            if (singleMessage.key().equals(MessageKey.PLAIN_TEXT.getType())) {
-                SendTextMessageReq req = new SendTextMessageReq();
-                req.setContent(singleMessage.content());
-                req.setWxid(wxid);
-                req.setToWxid(receipt.getTarget().getId());
-                // TODO: 2025/3/25 处理@消息
-                req.setType(0);
-                SendTextMessageRes sendTextMessageRes = PadPlusHttpUtil.SendMessage(service, req);
-                if (sendTextMessageRes != null && sendTextMessageRes.getCode() == 0) {
-                    return true;
-                }
+            switch (singleMessage.getType()) {
+                case PLAIN_TEXT:
+                    handleText(singleMessage, receipt.getTarget());
+                    break;
+                case IMAGE:
+                    break;
+                default:
+                    log.error("不支持的消息类型");
             }
+
         }
         return false;
     }
@@ -180,6 +178,7 @@ public class PadPlusBotAdapter implements BotAdapter {
         return null;
     }
 
+    //====================================private=================================================
 
     private void contentHandle() {
 
@@ -216,6 +215,21 @@ public class PadPlusBotAdapter implements BotAdapter {
             g.drawString(text, x, textHeight);
 
             return image;
+        }
+    }
+
+    private void handleText(SingleMessage message, Contact contact) {
+        PlainText text = message.as(PlainText.class);
+        if (text != null) {
+            SendTextMessageReq req = new SendTextMessageReq();
+            req.setContent(message.content());
+            req.setWxid(wxid);
+            req.setToWxid(contact.getId());
+            // TODO: 2025/3/25 处理@消息
+            req.setType(0);
+            SendTextMessageRes sendTextMessageRes = PadPlusHttpUtil.SendMessage(service, req);
+            if (sendTextMessageRes != null && sendTextMessageRes.getCode() == 0) {
+            }
         }
     }
 

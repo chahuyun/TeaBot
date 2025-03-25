@@ -1,8 +1,10 @@
 package cn.chahuyun.teabot.adapter.bot.gewe;
 
 import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
 import cn.chahuyun.teabot.api.message.MessageChain;
+import cn.chahuyun.teabot.api.message.MessageReceipt;
 
 /**
  *
@@ -30,9 +32,10 @@ public class GeweBotAdapter implements BotAdapter {
      * @return true 成功
      */
     @Override
-    public boolean sendMessage(MessageChain message) {
+    public <C extends Contact> boolean sendMessage(MessageReceipt<C> message) {
         return false;
     }
+
 
     /**
      * 监听消息

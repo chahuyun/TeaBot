@@ -41,12 +41,4 @@ public interface Bot extends ContactOrBot {
      */
     Friend getFriend(String id);
 
-    /**
-     * 发送消息
-     * @param message 消息
-     */
-    void sendMessage(MessageChain message);
-
-    //todo 发送消息的抽象方法
-
 }

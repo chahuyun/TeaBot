@@ -81,13 +81,4 @@ public abstract class AbstractBot implements Bot {
         return adapter.getFriend(id);
     }
 
-    /**
-     * 发送消息
-     *
-     * @param message 消息
-     */
-    @Override
-    public void sendMessage(MessageChain message) {
-        adapter.sendMessage(message);
-    }
 }

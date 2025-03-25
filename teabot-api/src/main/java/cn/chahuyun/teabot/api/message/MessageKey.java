@@ -8,5 +8,11 @@ public interface MessageKey<M extends SingleMessage> {
      * 将一个 {@link SingleMessage} 强转为 {@link M} 类型. 在类型不符合时返回 `null`
      */
     M safeCast(SingleMessage message);
+
+    /**
+     * 返回这个消息类型的类型名称
+     * @return 类型名称
+     */
+    String key();
 }
 

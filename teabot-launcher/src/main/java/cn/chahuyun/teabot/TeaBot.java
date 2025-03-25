@@ -3,6 +3,7 @@ package cn.chahuyun.teabot;
 import cn.chahuyun.teabot.api.app.RestApplication;
 import cn.chahuyun.teabot.conf.system.ConfigService;
 import cn.chahuyun.teabot.repository.RepositoryLoader;
+import cn.hutool.cron.CronUtil;
 
 /**
  * bot启动类
@@ -17,6 +18,8 @@ public class TeaBot {
         RepositoryLoader.load(TeaBot.class);
         //这里应该启动的是web服务，通过接口操作其他任务
         RestApplication.init();
+
+        CronUtil.start();
     }
 
 }

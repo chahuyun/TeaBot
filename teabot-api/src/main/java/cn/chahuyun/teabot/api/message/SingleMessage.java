@@ -8,6 +8,11 @@ package cn.chahuyun.teabot.api.message;
  */
 public interface SingleMessage extends Message {
 
+    /**
+     * 返回这个消息类型的类型名称
+     * @return 类型名称
+     */
+    String key();
 
 
 }

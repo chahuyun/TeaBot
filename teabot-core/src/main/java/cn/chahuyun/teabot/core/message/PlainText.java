@@ -38,6 +38,6 @@ public class PlainText extends AbstractMessageKey<PlainText> implements Message,
      */
     @Override
     public String key() {
-        return this.getClass().getSimpleName();
+        return super.getKey();
     }
 }

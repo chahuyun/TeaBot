@@ -23,5 +23,8 @@ public abstract class AbstractMessageKey<M extends SingleMessage> implements Mes
         return safeCastFunction.apply(message);
     }
 
+    String getKey() {
+        return MessageKey.class.getSimpleName();
+    }
 
 }

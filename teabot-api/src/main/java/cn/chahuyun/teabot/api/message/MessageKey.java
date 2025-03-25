@@ -9,10 +9,6 @@ public interface MessageKey<M extends SingleMessage> {
      */
     M safeCast(SingleMessage message);
 
-    /**
-     * 返回这个消息类型的类型名称
-     * @return 类型名称
-     */
-    String key();
+
 }
 

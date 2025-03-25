@@ -128,7 +128,7 @@ public class PadPlusBotAdapter implements BotAdapter {
     /**
      * 发送文本消息
      *
-     * @param  receipt
+     * @param  receipt 消息源
      * @return true 成功
      */
     @Override

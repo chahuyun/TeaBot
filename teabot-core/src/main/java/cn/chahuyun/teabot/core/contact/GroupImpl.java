@@ -74,6 +74,6 @@ public class GroupImpl implements Group {
      */
     @Override
     public void sendMessage(MessageChain message) {
-        getBot().sendMessage(message);
+        //todo 在这里实现发送消息
     }
 }

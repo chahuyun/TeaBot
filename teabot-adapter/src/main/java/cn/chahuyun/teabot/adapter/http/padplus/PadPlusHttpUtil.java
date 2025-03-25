@@ -80,4 +80,23 @@ public class PadPlusHttpUtil {
         return null;
     }
 
+    //发送文本消息
+    public static SendTextMessageRes SendMessage(PadPlusService service, SendTextMessageReq req){
+        try {
+            Response<Results> execute = service.sendTextMessage(req).execute();
+            if (execute.isSuccessful()) {
+                Results body = execute.body();
+                if (body != null) {
+                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("AddMsgs")) {
+                        return gson.fromJson(body.getData(), SendTextMessageRes.class);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+
 }

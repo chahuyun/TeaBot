@@ -15,6 +15,7 @@ import cn.chahuyun.teabot.util.ImageUtil;
 import cn.hutool.cron.CronUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import retrofit2.Response;
 
 import javax.imageio.ImageIO;
@@ -126,7 +127,7 @@ public class PadPlusBotAdapter implements BotAdapter {
     }
 
     /**
-     * 发送文本消息
+     * 发送消息
      *
      * @param  receipt 消息源
      * @return true 成功
@@ -134,6 +135,7 @@ public class PadPlusBotAdapter implements BotAdapter {
     @Override
     public <C extends Contact> boolean sendMessage(MessageReceipt<C> receipt) {
         for (SingleMessage singleMessage : receipt.getMessageChain()) {
+            //文本
             if (singleMessage.key().equals(MessageKey.PLAIN_TEXT.getType())) {
                 SendTextMessageReq req = new SendTextMessageReq();
                 req.setContent(singleMessage.content());
@@ -146,9 +148,19 @@ public class PadPlusBotAdapter implements BotAdapter {
                     return true;
                 }
             }
+            //语音
+            else if (singleMessage.key().equals(MessageKey.VOICE.getType())){
+                SendVideoMessageReq req = new SendVideoMessageReq();
+                req.setWxid(wxid);
+                req.setToWxid(receipt.getTarget().getId());
+                req.setBase64("xxx");
+                req.setImageBase64("xxx");
+                req.setPlayLength(4);
+            }
         }
         return false;
     }
+
 
     /**
      * 监听消息

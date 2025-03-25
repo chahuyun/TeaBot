@@ -2,6 +2,7 @@ package cn.chahuyun.teabot.adapter.http.padplus;
 
 import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -42,5 +43,7 @@ public interface PadPlusService {
     @POST("api/Msg/SendTxt")
     Call<Results> sendTextMessage(@Body SendTextMessageReq req);
 
+    @POST("api/Msg/SendVoice")
+    Call<Results> sendVoiceMessage(@Body SendVoiceMessageReq req);
 
 }

@@ -12,6 +12,7 @@ import lombok.Data;
 public class SendTextMessageReq {
 
     private String At;
+
     private String Content;
 
     private String ToWxid;

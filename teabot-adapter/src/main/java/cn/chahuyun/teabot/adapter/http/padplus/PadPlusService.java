@@ -1,8 +1,6 @@
 package cn.chahuyun.teabot.adapter.http.padplus;
 
-import cn.chahuyun.teabot.adapter.http.padplus.vo.GetQrReq;
-import cn.chahuyun.teabot.adapter.http.padplus.vo.Results;
-import cn.chahuyun.teabot.adapter.http.padplus.vo.SyncMessageReq;
+import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -42,7 +40,7 @@ public interface PadPlusService {
 
 
     @POST("api/Msg/SendTxt")
-    Call<Results> sendTextMessage(@Body SyncMessageReq req);
+    Call<Results> sendTextMessage(@Body SendTextMessageReq req);
 
 
 }

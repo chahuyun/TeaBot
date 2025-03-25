@@ -11,6 +11,7 @@ import cn.chahuyun.teabot.api.contact.Friend;
 import cn.chahuyun.teabot.api.message.MessageReceipt;
 import cn.chahuyun.teabot.api.message.PlainText;
 import cn.chahuyun.teabot.api.message.SingleMessage;
+import cn.chahuyun.teabot.api.message.VoiceMessage;
 import cn.chahuyun.teabot.util.ImageUtil;
 import cn.hutool.cron.CronUtil;
 import lombok.Getter;
@@ -30,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * padPlus的bot适配
  *
- * @author Moyuyanli
+ * @author MoyuyanlisingleMessage
  * @date 2025-2-26 17:17
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -68,6 +69,7 @@ public class PadPlusBotAdapter implements BotAdapter {
         this.service = HttpUtil.getRetrofit(config.getBaseUrl()).create(PadPlusService.class);
     }
 
+    @Override
     public boolean login() {
         GetQrRes qrCode = PadPlusHttpUtil.getQrCode(service, config);
         String qrBase64 = qrCode.getQrBase64();
@@ -139,6 +141,9 @@ public class PadPlusBotAdapter implements BotAdapter {
                     handleText(singleMessage, receipt.getTarget());
                     break;
                 case IMAGE:
+                    break;
+                case VOICE:
+                    handleVoice(singleMessage,receipt.getTarget());
                     break;
                 default:
                     log.error("不支持的消息类型");
@@ -221,7 +226,7 @@ public class PadPlusBotAdapter implements BotAdapter {
         PlainText text = message.as(PlainText.class);
         if (text != null) {
             SendTextMessageReq req = new SendTextMessageReq();
-            req.setContent(message.content());
+            req.setContent(text.content());
             req.setWxid(wxid);
             req.setToWxid(contact.getId());
             // TODO: 2025/3/25 处理@消息
@@ -230,6 +235,17 @@ public class PadPlusBotAdapter implements BotAdapter {
             if (sendTextMessageRes != null && sendTextMessageRes.getCode() == 0) {
             }
         }
+    }
+    private void handleVoice(SingleMessage message,Contact contact){
+        VoiceMessage voiceMessage = message.as(VoiceMessage.class);
+        SendVideoMessageReq req = new SendVideoMessageReq();
+        req.setPlayLength(voiceMessage.getPlayLength());
+        req.setBase64(voiceMessage.getBase64());
+        req.setWxid(wxid);
+        req.setImageBase64(voiceMessage.getImageBase64());
+        req.setToWxid(contact.getId());
+
+
     }
 
 }

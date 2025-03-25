@@ -1,7 +1,11 @@
 package cn.chahuyun.teabot.api.config;
 
+import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
 import cn.chahuyun.teabot.api.message.MessageChain;
+import cn.chahuyun.teabot.api.message.MessageReceipt;
+
+import java.io.Serializable;
 
 /**
  * bot适配器
@@ -9,7 +13,12 @@ import cn.chahuyun.teabot.api.message.MessageChain;
  * @author Moyuyanli
  * @date 2025-2-26 17:12
  */
-public interface BotAdapter {
+public interface BotAdapter extends Serializable {
+
+    /**
+     * 序列化id
+     */
+    long serialVersionUID = 1L;
 
     /**
      * 登录
@@ -28,7 +37,7 @@ public interface BotAdapter {
      * @param message 消息
      * @return true 成功
      */
-    boolean sendMessage(MessageChain message);
+    <C extends Contact> boolean sendMessage(MessageReceipt<C> message);
 
     /**
      * 监听消息

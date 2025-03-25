@@ -4,6 +4,7 @@ plugins {
 
 group = "cn.chahuyun"
 version = "1.0-SNAPSHOT"
+description = "teabot-api"
 
 repositories {
     mavenCentral()

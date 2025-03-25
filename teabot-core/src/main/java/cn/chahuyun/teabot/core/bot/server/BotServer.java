@@ -1,7 +1,8 @@
 package cn.chahuyun.teabot.core.bot.server;
 
-import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.adapter.bot.padplus.PadPlusBotAdapter;
+import cn.chahuyun.teabot.adapter.bot.padplus.PadPlusBotConfig;
+import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.config.BotConfig;
 import cn.chahuyun.teabot.core.bot.BotFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class BotServer {
     private static BotAdapter createAdapter(BotConfig config) {
         switch (config.getBotType()) {
             case PAD_PLUS:
-                return new PadPlusBotAdapter((cn.chahuyun.teabot.adapter.bot.padplus.PadPlusBotConfig) config);
+                return new PadPlusBotAdapter(new PadPlusBotConfig(config));
             // 添加其他类型的适配器
             default:
                 return null;

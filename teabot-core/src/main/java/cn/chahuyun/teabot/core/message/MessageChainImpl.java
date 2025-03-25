@@ -28,7 +28,7 @@ public class MessageChainImpl extends AbstractMessageChain implements MessageCha
      * @return 对应类型的消息元素，如果没有找到则返回 null
      */
     @Override
-    public <M extends SingleMessage> M get(MessageKey<M> key) {
+    public <M extends SingleMessage> M get(MessageKey key) {
         return null;
     }
 }

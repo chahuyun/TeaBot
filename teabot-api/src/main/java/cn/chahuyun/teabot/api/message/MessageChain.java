@@ -17,6 +17,6 @@ public interface MessageChain extends Message, List<SingleMessage> {
      * @param <M> 消息类型
      * @return 对应类型的消息元素，如果没有找到则返回 null
      */
-    <M extends SingleMessage> M get(MessageKey<M> key);
+    <M extends SingleMessage> M get(MessageKey key);
 
 }

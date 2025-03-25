@@ -3,6 +3,7 @@ plugins {
 
 group = "cn.chahuyun"
 version = "1.0-SNAPSHOT"
+description = "teabot-core"
 
 repositories {
     mavenCentral()

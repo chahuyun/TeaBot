@@ -6,7 +6,8 @@ package cn.chahuyun.teabot.api.message;
 
 public enum MessageKey {
     PLAIN_TEXT,
-    IMAGE
+    IMAGE,
+    VOICE
 
 
 }

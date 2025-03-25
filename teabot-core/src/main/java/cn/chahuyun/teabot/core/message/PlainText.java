@@ -31,13 +31,4 @@ public class PlainText extends AbstractMessageKey<PlainText> implements Message,
         return null;
     }
 
-    /**
-     * 返回这个消息类型的类型名称
-     *
-     * @return 类型名称
-     */
-    @Override
-    public String key() {
-        return super.getKey();
-    }
 }

@@ -11,6 +11,7 @@ import cn.chahuyun.teabot.api.contact.Friend;
 import cn.chahuyun.teabot.api.message.MessageReceipt;
 import cn.chahuyun.teabot.api.message.PlainText;
 import cn.chahuyun.teabot.api.message.SingleMessage;
+import cn.chahuyun.teabot.message.MessageKey;
 import cn.chahuyun.teabot.util.ImageUtil;
 import cn.hutool.cron.CronUtil;
 import lombok.Getter;
@@ -143,7 +144,6 @@ public class PadPlusBotAdapter implements BotAdapter {
                 default:
                     log.error("不支持的消息类型");
             }
-
         }
         return false;
     }

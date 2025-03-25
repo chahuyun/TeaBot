@@ -10,7 +10,8 @@ public enum MessageKey {
      * 纯文本消息
      */
 
-    PLAIN_TEXT("PlainText");
+    PLAIN_TEXT("PlainText"),
+    VOICE("VoiceMessage");
 
     private final String type;
 

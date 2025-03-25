@@ -1,7 +1,6 @@
 package cn.chahuyun.teabot.adapter.http.padplus;
 
 import cn.chahuyun.teabot.adapter.bot.padplus.PadPlusBotConfig;
-import cn.chahuyun.teabot.conf.bot.BotConfiguration;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import retrofit2.Response;
@@ -98,5 +97,22 @@ public class PadPlusHttpUtil {
         return null;
     }
 
+    //发送语音消息
+    public static SendVideoMessageRes SendVoiceMessage(PadPlusService service,SendVoiceMessageReq req){
+        try {
+            Response<Results> execute = service.sendVoiceMessage(req).execute();
+            if (execute.isSuccessful()) {
+                Results body = execute.body();
+                if (body != null) {
+                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("AddMsgs")) {
+                        return gson.fromJson(body.getData(), SendVideoMessageRes.class);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 
 }

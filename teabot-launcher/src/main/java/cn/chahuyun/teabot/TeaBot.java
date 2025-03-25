@@ -2,6 +2,7 @@ package cn.chahuyun.teabot;
 
 import cn.chahuyun.teabot.api.app.RestApplication;
 import cn.chahuyun.teabot.conf.system.ConfigService;
+import cn.chahuyun.teabot.conf.system.TeaBotFileCore;
 import cn.chahuyun.teabot.repository.RepositoryLoader;
 import cn.hutool.cron.CronUtil;
 

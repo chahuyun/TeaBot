@@ -46,4 +46,7 @@ public interface PadPlusService {
     @POST("api/Msg/SendVoice")
     Call<Results> sendVoiceMessage(@Body SendVoiceMessageReq req);
 
+    @POST("api/Msg/UploadImg")
+    Call<Results> sendImageMessage(@Body SendImageMessageReq req);
+
 }

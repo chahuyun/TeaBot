@@ -1,10 +1,14 @@
 package cn.chahuyun.teabot.conf.system;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import cn.chahuyun.teabot.conf.system.entity.LoggersConfig;
 import cn.chahuyun.teabot.conf.system.entity.SystemConfig;
 import cn.chahuyun.teabot.util.GsonUtil;
 import cn.hutool.core.io.FileUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,10 +55,23 @@ public class ConfigService {
         try (InputStream inputStream = Files.newInputStream(configPath)) {
             String configContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             instance.config = GsonUtil.fromJson(configContent, SystemConfig.class);
-            log.info("Configuration loaded from: {}", configPath);
+            log.debug("从加载的配置: {}", configPath);
         } catch (IOException e) {
             throw new RuntimeException("无法读取配置文件", e);
         }
+
+        // 1. 获取 LoggerContext
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        // 2. 设置根日志级别为 ERROR
+        Logger rootLogger = loggerContext.getLogger("root");
+        rootLogger.setLevel(instance.config.getLogger().getLevel());
+
+        for (LoggersConfig loggerConfig : instance.config.getLogger().getLoggers()) {
+            Logger targetLogger = loggerContext.getLogger(loggerConfig.getName());
+            targetLogger.setLevel(loggerConfig.getLevel());
+        }
+
     }
 
     private static void copyDefaultConfigTo(Path targetPath) {

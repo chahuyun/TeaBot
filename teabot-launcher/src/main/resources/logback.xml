@@ -1,0 +1,31 @@
+<configuration>
+    <contextName>TeaBot</contextName>
+
+    <!-- 控制台输出（彩色高亮） -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 启用高亮功能 -->
+            <highlight>true</highlight>
+            <includeCallerData>true</includeCallerData>
+            <pattern>
+                %cyan([${CONTEXT_NAME}]) %d{MM-dd HH:mm:ss} %highlight(%-5level) %yellow(%t) %logger{12}.%M - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出（保持原样） -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>teabot.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <!-- 可选：对特定包设置更细的日志级别 -->
+    <!-- <logger name="cn.chahuyun" level="TRACE" /> -->
+</configuration>

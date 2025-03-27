@@ -1,4 +1,13 @@
 {
+  "logger": {
+    "level": "info",
+    "loggers": [
+      {
+        "name": "cn.chahuyun",
+        "level": "info"
+      }
+    ]
+  },
   "server": {
     "port": 8080
   },

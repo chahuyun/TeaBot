@@ -14,6 +14,11 @@ import lombok.Setter;
 public class SystemConfig {
 
     /**
+     * 日志配置
+     */
+    private LoggerConfig logger;
+
+    /**
      * 服务配置
      */
     private ServeConfig server;

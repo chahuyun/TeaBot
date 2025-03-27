@@ -6,12 +6,18 @@ import cn.chahuyun.teabot.adapter.http.padplus.PadPlusHttpUtil;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusService;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
 import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.api.config.BotConfig;
 import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
+import cn.chahuyun.teabot.api.message.MessageReceipt;
+import cn.chahuyun.teabot.api.message.PlainText;
+import cn.chahuyun.teabot.api.message.SingleMessage;
+import cn.chahuyun.teabot.exp.BotNotLoginException;
 import cn.chahuyun.teabot.api.message.*;
 import cn.chahuyun.teabot.util.ImageUtil;
 import cn.hutool.cron.CronUtil;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import retrofit2.Response;
 
@@ -24,24 +30,33 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 /**
  * padPlus的bot适配
  *
- * @author MoyuyanlisingleMessage
+ * @author Moyuyanli
  * @date 2025-2-26 17:17
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
 @Slf4j
-public class PadPlusBotAdapter implements BotAdapter {
+public class PadPlusBotAdapter implements BotAdapter, Serializable {
 
     private transient PadPlusService service;
     private final PadPlusBotConfig config;
 
+    /**
+     * 是否在线
+     * true 在线
+     */
+    private final AtomicBoolean isOnline = new AtomicBoolean(false);
+
     @Getter
+    @Setter
     private WeChatUser user;
 
     @Getter
+    @Setter
     private String wxid;
 
 
@@ -66,8 +81,48 @@ public class PadPlusBotAdapter implements BotAdapter {
         this.service = HttpUtil.getRetrofit(config.getBaseUrl()).create(PadPlusService.class);
     }
 
+    /**
+     * 获取配置信息
+     *
+     * @return BotConfig
+     */
+    @Override
+    public BotConfig getConfig() {
+        return config;
+    }
+
+    /**
+     * 获取这个适配器服务的botid
+     *
+     * @return botid
+     */
+    @Override
+    public String getId() {
+        return wxid;
+    }
+
+    /**
+     * 当前bot是否在线
+     *
+     * @return true 在线
+     */
+    @Override
+    public boolean isOnline() {
+        return isOnline.get();
+    }
+
     @Override
     public boolean login() {
+        //登录时检测一次心跳
+        heartbeat();
+
+        //在线就报登录成功，返回true
+        if (isOnline.get()) {
+            CronUtil.schedule("heartbeat-" + wxid, "0/5 * * * * ?", this::heartbeat);
+            return true;
+        }
+
+        //不在线进行用户登录流程
         GetQrRes qrCode = PadPlusHttpUtil.getQrCode(service, config);
         String qrBase64 = qrCode.getQrBase64();
         String userId = config.getUserId();
@@ -80,35 +135,43 @@ public class PadPlusBotAdapter implements BotAdapter {
 
             CountDownLatch latch = new CountDownLatch(1);
             AtomicReference<CheckQrRes> reference = new AtomicReference<>();
-            AtomicBoolean isLogin = new AtomicBoolean(false);
 
-            CronUtil.schedule(uuid, "* * * * *", () -> {
-                if (isLogin.get()) {
+            CronUtil.schedule(uuid, "0/2 * * * * ?", () -> {
+                if (isOnline.get()) {
                     CronUtil.remove(uuid);
                     latch.countDown(); // 通知主线程继续
                     return;
                 }
-
+                log.debug("uuid->{},扫码检测", uuid);
                 reference.set(PadPlusHttpUtil.checkQrCode(service, uuid));
                 if (reference.get() != null) {
-                    isLogin.set(true);
+                    isOnline.set(true);
                     latch.countDown(); // 通知主线程继续
                 }
             });
-
-            CronUtil.start();
 
             // 等待，直到latch的计数变为0
             try {
                 latch.await(60L, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // 恢复中断状态
+                log.error("等待检测登录二维码超时!uuid->{}", uuid);
+                CronUtil.remove(uuid);
+                return false;
             }
 
             CheckQrRes res = reference.get();
+            if (res == null) {
+                log.debug("bot登录失败!");
+                return false;
+            }
             user = res.getAcctSectResp();
             wxid = user.getUserName();
+            CronUtil.remove(uuid);
             ImageUtil.close(uuid);
+
+            CronUtil.schedule("heartbeat-" + wxid, "0/5 * * * * ?", this::heartbeat);
+
             return true;
 
 
@@ -116,7 +179,7 @@ public class PadPlusBotAdapter implements BotAdapter {
             log.error(e.getMessage(), e);
         }
 
-        return false; // 或者根据实际情况返回true
+        return false;
     }
 
     @Override
@@ -139,11 +202,11 @@ public class PadPlusBotAdapter implements BotAdapter {
                     log.info("成功发送语音消息");
                     break;
                 case IMAGE:
-                    handleImage(singleMessage,receipt.getTarget());
+                    handleImage(singleMessage, receipt.getTarget());
                     log.info("成功发送图片消息");
                     break;
                 case VOICE:
-                    handleVoice(singleMessage,receipt.getTarget());
+                    handleVoice(singleMessage, receipt.getTarget());
                     log.info("成功发送语音消息");
                     break;
                 default:
@@ -158,12 +221,44 @@ public class PadPlusBotAdapter implements BotAdapter {
      */
     @Override
     public void listeningMessages() {
-        CronUtil.schedule(getWxid(), "* * * * *", () -> {
+        heartbeat();
+        if (!isOnline.get()) {
+            throw new BotNotLoginException("bot未登录!");
+        }
+        CronUtil.schedule("sync-message-" + wxid, "* * * * * ?", () -> {
             try {
-                Response<Results> execute = service.syncMessage(new SyncMessageReq(wxid)).execute();
+                SyncMessageRes syncMessageRes = PadPlusHttpUtil.syncMessage(service, wxid);
+                if (syncMessageRes == null) {
+                    return;
+                }
+                for (PadPlusMessage msg : syncMessageRes.getAddMsgs()) {
+                    int msgType = msg.getMsgType();
+                    switch (msgType) {
+                        case 1 -> {
+                            if (Pattern.matches("\\d+@chatroom", msg.getFromUserName().getString())) {
+//                                MessageEventFactory factory = FactoryUtil.getFactory(MessageEventFactory.class);
+//                                factory.createGroupMessageEvent(
+//                                        BotContainer.getBot(wxid),
+//
+//                                )
+//
+//
+//                                GroupMessageEvent.builder()
+//                                        .bot(BotContainer.getBot(wxid))
+//                                        .sender()
+//                                        .message(new PlainText(msg.getContent()))
+//                                        .setSubject(new Group(msg.getToUserName()))
+//                                        .setTime(msg.getCreateTime())
+//                                        .build();
+                            }
+                        }
+                        default -> {
 
+                        }
+                    }
+                }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
@@ -185,9 +280,6 @@ public class PadPlusBotAdapter implements BotAdapter {
 
     //====================================private=================================================
 
-    private void contentHandle() {
-
-    }
 
     private BufferedImage processQRImage(String qrBase64, String userId, String uuid) throws IOException {
         if (qrBase64.startsWith("data:image/jpg;base64,")) {
@@ -223,6 +315,22 @@ public class PadPlusBotAdapter implements BotAdapter {
         }
     }
 
+    /**
+     * 心跳检测，验证登录状态
+     */
+    private void heartbeat() {
+        try {
+            isOnline.set(PadPlusHttpUtil.heartBeat(service, wxid));
+        } catch (Exception e) {
+            isOnline.set(false);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void contentHandle() {
+
+    }
+
     //发送文本消息
     private void handleText(SingleMessage message, Contact contact) {
         PlainText text = message.as(PlainText.class);
@@ -240,7 +348,7 @@ public class PadPlusBotAdapter implements BotAdapter {
     }
 
     //发送语音消息
-    private void handleVoice(SingleMessage message,Contact contact){
+    private void handleVoice(SingleMessage message, Contact contact) {
         VoiceMessage voiceMessage = message.as(VoiceMessage.class);
         SendVoiceMessageReq req = new SendVoiceMessageReq();
         // TODO: 2025/3/26 生成语音文件
@@ -249,23 +357,25 @@ public class PadPlusBotAdapter implements BotAdapter {
         req.setBase64(voiceMessage.getBase64());
         req.setWxid(wxid);
         req.setToWxid(contact.getId());
-        SendVideoMessageRes res = PadPlusHttpUtil.SendVoiceMessage(service,req);
+        SendVideoMessageRes res = PadPlusHttpUtil.SendVoiceMessage(service, req);
         if (res != null && res.getCode() == 0) {
         }
 
 
     }
+
     //发送图片消息
-    private void handleImage(SingleMessage message,Contact contact){
+    private void handleImage(SingleMessage message, Contact contact) {
         ImageMessage imageMessage = message.as(ImageMessage.class);
         SendImageMessageReq req = new SendImageMessageReq();
         // TODO: 2025/3/26 把图片的url转为base64
         req.setBase64(imageMessage.getBase64());
         req.setWxid(wxid);
         req.setToWxid(contact.getId());
-        SendImageMessageRes res = PadPlusHttpUtil.SendImageMessage(service,req);
+        SendImageMessageRes res = PadPlusHttpUtil.SendImageMessage(service, req);
         if (res != null && res.getCode() == 0) {
         }
     }
+
 
 }

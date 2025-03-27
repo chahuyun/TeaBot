@@ -1,6 +1,7 @@
 package cn.chahuyun.teabot.core.event;
 
 import cn.chahuyun.teabot.api.event.Event;
+import cn.chahuyun.teabot.api.event.EventBus;
 import cn.chahuyun.teabot.core.event.lamda.EventChainContext;
 import cn.chahuyun.teabot.core.event.lamda.EventHandler;
 
@@ -17,7 +18,7 @@ import java.util.function.Predicate;
  * @author Moyuyanli
  * @date 2025-3-6 16:40
  */
-public class EventChannel {
+public class EventChannel implements EventBus {
     private final Map<Class<? extends Event>, List<HandlerRegistration<?>>> handlers = new ConcurrentHashMap<>();
     private final Comparator<HandlerRegistration<?>> priorityComparator =
             Comparator.<HandlerRegistration<?>>comparingInt(HandlerRegistration::getPriority).reversed();
@@ -29,7 +30,7 @@ public class EventChannel {
 
     //todo 事件通道
 
-    // 触发事件
+    @Override
     public void fire(Event event) {
         Class<? extends Event> eventType = event.getClass();
         List<HandlerRegistration<?>> registrations = handlers.get(eventType);

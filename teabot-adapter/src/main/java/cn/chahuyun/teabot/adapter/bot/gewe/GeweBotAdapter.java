@@ -3,7 +3,6 @@ package cn.chahuyun.teabot.adapter.bot.gewe;
 import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
-import cn.chahuyun.teabot.api.message.MessageChain;
 import cn.chahuyun.teabot.api.message.MessageReceipt;
 
 /**
@@ -12,7 +11,7 @@ import cn.chahuyun.teabot.api.message.MessageReceipt;
  * @author Moyuyanli
  * @date 2025-2-26 17:30
  */
-public class GeweBotAdapter implements BotAdapter {
+public abstract class GeweBotAdapter implements BotAdapter {
 
 
     @Override

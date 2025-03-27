@@ -2,13 +2,15 @@ package cn.chahuyun.teabot.api.config;
 
 import cn.chahuyun.teabot.conf.bot.BotType;
 
+import java.io.Serializable;
+
 /**
  * bot配置
  *
  * @author Moyuyanli
  * @date 2025-3-18 17:21
  */
-public interface BotConfig {
+public interface BotConfig extends Serializable {
 
     /**
      * 获取bot类型

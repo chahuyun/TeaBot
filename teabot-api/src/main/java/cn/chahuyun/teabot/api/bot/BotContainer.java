@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.core.bot;
+package cn.chahuyun.teabot.api.bot;
 
 import cn.chahuyun.teabot.api.contact.Bot;
 
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentMap;
 public class BotContainer {
 
     // 使用线程安全的 ConcurrentHashMap
-    private static final ConcurrentMap<String, AbstractBot> botMap = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Bot> botMap = new ConcurrentHashMap<>();
 
     // 私有构造函数，防止外部实例化
     private BotContainer() {}
@@ -25,7 +25,7 @@ public class BotContainer {
      *
      * @param bot Bot 实例
      */
-    public static void addBot(AbstractBot bot) {
+    public static void addBot(Bot bot) {
         if (bot == null) {
             throw new IllegalArgumentException("Bot cannot be null");
         }
@@ -60,7 +60,7 @@ public class BotContainer {
      *
      * @return Bot 集合
      */
-    public static Collection<AbstractBot> getAllBots() {
+    public static Collection<Bot> getAllBots() {
         return new ArrayList<>(botMap.values());
     }
 }

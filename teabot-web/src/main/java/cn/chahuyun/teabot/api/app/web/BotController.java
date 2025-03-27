@@ -1,6 +1,5 @@
 package cn.chahuyun.teabot.api.app.web;
 
-import cn.chahuyun.teabot.api.config.BotConfig;
 import cn.chahuyun.teabot.api.dto.R;
 import cn.chahuyun.teabot.core.bot.server.BotServer;
 import cn.chahuyun.teabot.repository.bot.entity.BotConfigEntity;
@@ -29,12 +28,13 @@ public class BotController {
             Spark.post("/add", BotController::addBot);
             Spark.post("/get", BotController::getBot);
             Spark.post("/online", BotController::goOnline);
+            Spark.post("/sync", BotController::goOnline);
         };
     }
 
     private static R addBot(Request request, Response response) {
         BotConfigEntity botConfig = GsonUtil.fromJson(request.body(), BotConfigEntity.class);
-        if (BeanUtil.hasNullField(botConfig, "id")) {
+        if (BeanUtil.hasNullField(botConfig, "id", "status")) {
             return R.error("配置不能为空");
         }
         return R.ok("添加成功", BotConfigService.addBotConfig(botConfig));
@@ -56,12 +56,19 @@ public class BotController {
             return R.error("id 不能为空!");
         }
         int id = object.get("id").getAsInt();
-        BotConfig botConfig = BotConfigService.getBotConfig(id);
+        BotConfigEntity botConfig = BotConfigService.getBotConfig(id);
         if (botConfig == null) {
             return R.error("不存在该bot配置:" + id);
         }
+
+        if (botConfig.getStatus()) {
+            return R.ok("该bot已经启动!");
+        }
+
         try {
             BotServer.newBot(botConfig);
+            botConfig.setStatus(true);
+            BotConfigService.updateBotConfig(botConfig);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return R.error("bot 尝试登录失败:" + e.getMessage());
@@ -69,5 +76,9 @@ public class BotController {
         return R.ok("登录成功");
     }
 
+    public static R sync(Request request, Response response) {
+        log.debug(request.body());
+        return R.ok();
+    }
 
 }

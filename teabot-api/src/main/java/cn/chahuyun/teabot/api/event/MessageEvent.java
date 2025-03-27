@@ -12,15 +12,31 @@ import cn.chahuyun.teabot.api.message.MessageChain;
  */
 public interface MessageEvent extends BotPassiveEvent,Event {
 
+    /**
+     * 获取消息接受载体
+     * @return Contact
+     */
     Contact getSubject();
 
+    /**
+     * 获取消息发送者
+     * @return User
+     */
     User getSender();
 
+    /**
+     * 获取消息发送者名称
+     * @return String
+     */
     String getSenderName();
 
+    /**
+     * 获取消息内容
+     * @return MessageChain
+     */
     MessageChain getMessage();
 
-    int getTime();
+
 
     //暂时没有想法实现
 //     getSource();

@@ -13,13 +13,13 @@ public interface ContactOrBot {
      * 用户id，不限于微信id
      * @return 用户id
      */
-    public String getId();
+    String getId();
 
     /**
      * 所属bot
      * @return bot
      */
-    public Bot getBot();
+    Bot getBot();
 
     String getName();
 

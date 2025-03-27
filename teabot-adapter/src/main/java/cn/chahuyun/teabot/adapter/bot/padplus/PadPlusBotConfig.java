@@ -5,6 +5,8 @@ import cn.chahuyun.teabot.conf.bot.BotType;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  *
  *
@@ -13,7 +15,7 @@ import lombok.Setter;
  */
 
 @Setter
-public class PadPlusBotConfig implements BotConfig {
+public class PadPlusBotConfig implements BotConfig, Serializable {
 
     private String baseUrl;
     private String userId;

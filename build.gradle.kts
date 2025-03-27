@@ -22,7 +22,9 @@ subprojects {
     dependencies {
         implementation("com.google.code.gson:gson:2.9.0")
 
-        implementation("org.slf4j:slf4j-simple:1.7.36") // 添加日志支持
+        implementation("org.slf4j:slf4j-api:1.7.36")
+        implementation("ch.qos.logback:logback-classic:1.2.11")
+
 
         implementation("cn.hutool:hutool-all:5.8.36")
 

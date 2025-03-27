@@ -13,7 +13,7 @@ import cn.chahuyun.teabot.api.message.SingleMessage;
  */
 public class ImageMessageImpl extends AbstractMessageKey implements Message, SingleMessage, ImageMessage {
 
-    private String base64;
+    private final String base64;
 
     //被缓存后的路径
     private String url;

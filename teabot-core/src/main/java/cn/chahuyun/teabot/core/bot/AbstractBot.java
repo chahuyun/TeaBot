@@ -3,7 +3,6 @@ package cn.chahuyun.teabot.core.bot;
 import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.contact.Bot;
 import cn.chahuyun.teabot.api.contact.Friend;
-import cn.chahuyun.teabot.api.message.MessageChain;
 import cn.chahuyun.teabot.conf.bot.BotType;
 
 /**
@@ -59,7 +58,9 @@ public abstract class AbstractBot implements Bot {
      */
     @Override
     public void login() {
-        adapter.login();
+        if (!adapter.login()) {
+            throw new RuntimeException("登录失败");
+        }
     }
 
     /**

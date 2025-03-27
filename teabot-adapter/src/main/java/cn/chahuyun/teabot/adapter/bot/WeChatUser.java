@@ -2,6 +2,8 @@ package cn.chahuyun.teabot.adapter.bot;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  *
  *
@@ -9,7 +11,7 @@ import lombok.Data;
  * @date 2025-3-3 16:09
  */
 @Data
-public class WeChatUser {
+public class WeChatUser implements Serializable {
 
     /**
      * 微信id

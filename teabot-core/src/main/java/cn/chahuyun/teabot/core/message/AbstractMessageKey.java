@@ -3,8 +3,6 @@ package cn.chahuyun.teabot.core.message;
 import cn.chahuyun.teabot.api.message.MessageKey;
 import cn.chahuyun.teabot.api.message.SingleMessage;
 
-import java.util.function.Function;
-
 /**
  *
  *

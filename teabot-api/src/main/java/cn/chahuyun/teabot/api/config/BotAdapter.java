@@ -2,7 +2,6 @@ package cn.chahuyun.teabot.api.config;
 
 import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
-import cn.chahuyun.teabot.api.message.MessageChain;
 import cn.chahuyun.teabot.api.message.MessageReceipt;
 
 import java.io.Serializable;
@@ -19,6 +18,24 @@ public interface BotAdapter extends Serializable {
      * 序列化id
      */
     long serialVersionUID = 1L;
+
+    /**
+     * 获取配置信息
+     * @return BotConfig
+     */
+    BotConfig getConfig();
+
+    /**
+     * 获取这个适配器服务的botid
+     * @return botid
+     */
+    String getId();
+
+    /**
+     * 当前bot是否在线
+     * @return true 在线
+     */
+    boolean isOnline();
 
     /**
      * 登录

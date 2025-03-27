@@ -14,6 +14,6 @@ dependencies {
 
 
     api(project(":teabot-api"))
-    implementation(project(":teabot-adapter"))
+    runtimeOnly(project(":teabot-adapter"))
 }
 

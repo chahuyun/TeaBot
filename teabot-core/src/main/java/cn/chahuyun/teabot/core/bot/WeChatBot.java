@@ -6,6 +6,8 @@ import cn.chahuyun.teabot.api.config.BotConfig;
 import cn.chahuyun.teabot.api.contact.Bot;
 import cn.chahuyun.teabot.api.contact.Friend;
 import cn.chahuyun.teabot.conf.bot.BotType;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -15,9 +17,10 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2025-2-21 14:38
  */
 @Slf4j
+@Setter
+@Getter
 public class WeChatBot extends AbstractBot {
 
-    private final boolean isOnline;
 
     private String name;
 
@@ -25,13 +28,6 @@ public class WeChatBot extends AbstractBot {
 
     public WeChatBot(BotConfig config, BotAdapter adapter) {
         super(config.getUserId(), adapter, BotType.PAD_PLUS);
-
-        if (!this.getAdapter().login()) {
-            log.error("登录失败！");
-            throw new RuntimeException("创建bot失败!");
-        }
-
-        isOnline = true;
     }
 
 
@@ -62,7 +58,7 @@ public class WeChatBot extends AbstractBot {
      */
     @Override
     public boolean isOnline() {
-        return isOnline;
+        return getAdapter().isOnline();
     }
 
     /**

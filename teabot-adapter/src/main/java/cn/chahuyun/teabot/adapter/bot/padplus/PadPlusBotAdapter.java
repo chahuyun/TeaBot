@@ -8,9 +8,7 @@ import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
 import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
-import cn.chahuyun.teabot.api.message.MessageReceipt;
-import cn.chahuyun.teabot.api.message.PlainText;
-import cn.chahuyun.teabot.api.message.SingleMessage;
+import cn.chahuyun.teabot.api.message.*;
 import cn.chahuyun.teabot.util.ImageUtil;
 import cn.hutool.cron.CronUtil;
 import lombok.Getter;
@@ -30,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * padPlus的bot适配
  *
- * @author Moyuyanli
+ * @author MoyuyanlisingleMessage
  * @date 2025-2-26 17:17
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -68,6 +66,7 @@ public class PadPlusBotAdapter implements BotAdapter {
         this.service = HttpUtil.getRetrofit(config.getBaseUrl()).create(PadPlusService.class);
     }
 
+    @Override
     public boolean login() {
         GetQrRes qrCode = PadPlusHttpUtil.getQrCode(service, config);
         String qrBase64 = qrCode.getQrBase64();
@@ -137,8 +136,15 @@ public class PadPlusBotAdapter implements BotAdapter {
             switch (singleMessage.getType()) {
                 case PLAIN_TEXT:
                     handleText(singleMessage, receipt.getTarget());
+                    log.info("成功发送语音消息");
                     break;
                 case IMAGE:
+                    handleImage(singleMessage,receipt.getTarget());
+                    log.info("成功发送图片消息");
+                    break;
+                case VOICE:
+                    handleVoice(singleMessage,receipt.getTarget());
+                    log.info("成功发送语音消息");
                     break;
                 default:
                     log.error("不支持的消息类型");
@@ -217,11 +223,12 @@ public class PadPlusBotAdapter implements BotAdapter {
         }
     }
 
+    //发送文本消息
     private void handleText(SingleMessage message, Contact contact) {
         PlainText text = message.as(PlainText.class);
         if (text != null) {
             SendTextMessageReq req = new SendTextMessageReq();
-            req.setContent(message.content());
+            req.setContent(text.content());
             req.setWxid(wxid);
             req.setToWxid(contact.getId());
             // TODO: 2025/3/25 处理@消息
@@ -229,6 +236,35 @@ public class PadPlusBotAdapter implements BotAdapter {
             SendTextMessageRes sendTextMessageRes = PadPlusHttpUtil.SendMessage(service, req);
             if (sendTextMessageRes != null && sendTextMessageRes.getCode() == 0) {
             }
+        }
+    }
+
+    //发送语音消息
+    private void handleVoice(SingleMessage message,Contact contact){
+        VoiceMessage voiceMessage = message.as(VoiceMessage.class);
+        SendVoiceMessageReq req = new SendVoiceMessageReq();
+        // TODO: 2025/3/26 生成语音文件
+        req.setType(4);
+        req.setVoiceTime(2);//1000为一秒
+        req.setBase64(voiceMessage.getBase64());
+        req.setWxid(wxid);
+        req.setToWxid(contact.getId());
+        SendVideoMessageRes res = PadPlusHttpUtil.SendVoiceMessage(service,req);
+        if (res != null && res.getCode() == 0) {
+        }
+
+
+    }
+    //发送图片消息
+    private void handleImage(SingleMessage message,Contact contact){
+        ImageMessage imageMessage = message.as(ImageMessage.class);
+        SendImageMessageReq req = new SendImageMessageReq();
+        // TODO: 2025/3/26 把图片的url转为base64
+        req.setBase64(imageMessage.getBase64());
+        req.setWxid(wxid);
+        req.setToWxid(contact.getId());
+        SendImageMessageRes res = PadPlusHttpUtil.SendImageMessage(service,req);
+        if (res != null && res.getCode() == 0) {
         }
     }
 

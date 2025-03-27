@@ -1,25 +1,31 @@
 package cn.chahuyun.teabot.core.message;
 
-import cn.chahuyun.teabot.api.message.ImageMessage;
 import cn.chahuyun.teabot.api.message.Message;
 import cn.chahuyun.teabot.api.message.MessageKey;
 import cn.chahuyun.teabot.api.message.SingleMessage;
+import cn.chahuyun.teabot.api.message.VoiceMessage;
+import lombok.Data;
 
 /**
- *
- *
- * @author Moyuyanli
- * @date 2025-3-24 17:31
+ * @Description : 语音消息
+ * @Author :Obi
+ * @Date: 2025/3/25 15:46
  */
-public class ImageMessageImpl extends AbstractMessageKey implements Message, SingleMessage, ImageMessage {
+
+public class VoiceMessageImpl extends AbstractMessageKey implements Message, SingleMessage, VoiceMessage {
 
     private String base64;
 
     //被缓存后的路径
     private String url;
 
-    public ImageMessageImpl(String base64) {
-        super(MessageKey.IMAGE);
+    private String imageBase64;
+
+    //音频长度
+    private Integer playLength;
+
+    public VoiceMessageImpl(String base64) {
+        super(MessageKey.VOICE);
         //todo base64转文件并保存到缓存目录
         this.base64 = base64;
     }
@@ -29,7 +35,7 @@ public class ImageMessageImpl extends AbstractMessageKey implements Message, Sin
      */
     @Override
     public String content() {
-        return "[图片]";
+        return "[语音]";
     }
 
     /**
@@ -50,5 +56,15 @@ public class ImageMessageImpl extends AbstractMessageKey implements Message, Sin
     @Override
     public String getBase64() {
         return base64;
+    }
+
+    @Override
+    public String getImageBase64() {
+        return imageBase64;
+    }
+
+    @Override
+    public Integer getPlayLength() {
+        return playLength;
     }
 }

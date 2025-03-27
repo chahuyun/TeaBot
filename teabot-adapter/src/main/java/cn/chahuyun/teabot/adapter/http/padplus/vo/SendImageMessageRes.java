@@ -4,17 +4,18 @@ import com.google.gson.JsonObject;
 import lombok.Data;
 
 /**
- * @Description : 发送语音消息返回参数
+ * @Description : 发送图片消息返回
  * @Author :Obi
- * @Date: 2025/3/25 15:20
+ * @Date: 2025/3/26 13:53
  */
 @Data
-public class SendVocieMessageRes {
-    Integer code;
+public class SendImageMessageRes {
 
-    Boolean success;
+    private Integer code;
 
-    String Message;
+    private Boolean Success;
+
+    private String Message;
 
     private JsonObject Data;
 

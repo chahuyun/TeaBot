@@ -115,4 +115,23 @@ public class PadPlusHttpUtil {
         return null;
     }
 
+    //发送图片消息
+    public static SendImageMessageRes SendImageMessage(PadPlusService service,SendImageMessageReq req){
+        try {
+            Response<Results> execute = service.sendImageMessage(req).execute();
+            if (execute.isSuccessful()) {
+                Results body = execute.body();
+                if (body != null) {
+                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("AddMsgs")) {
+                        return gson.fromJson(body.getData(), SendImageMessageRes.class);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+
 }

@@ -1,6 +1,6 @@
 package cn.chahuyun.teabot.adapter.http.padplus.vo;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import lombok.Data;
 
 /**
@@ -18,6 +18,6 @@ public class Results {
 
     private String Message;
 
+    private JsonElement Data;
 
-    private JsonObject Data;
 }

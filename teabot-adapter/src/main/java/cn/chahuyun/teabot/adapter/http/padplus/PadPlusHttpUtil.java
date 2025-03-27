@@ -2,6 +2,7 @@ package cn.chahuyun.teabot.adapter.http.padplus;
 
 import cn.chahuyun.teabot.adapter.bot.padplus.PadPlusBotConfig;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import retrofit2.Response;
 
@@ -20,7 +21,6 @@ import static cn.chahuyun.teabot.adapter.http.HttpUtil.gson;
 public class PadPlusHttpUtil {
 
 
-
     public static GetQrRes getQrCode(PadPlusService service, PadPlusBotConfig configuration) {
 
 
@@ -33,8 +33,9 @@ public class PadPlusHttpUtil {
 
             if (execute.isSuccessful()) {
                 Results body = execute.body();
-                if (body != null) {
-                    return gson.fromJson(body.getData(), GetQrRes.class);
+                if (body != null && body.getCode() == 0 && !body.getData().isJsonNull()) {
+                    JsonObject json = body.getData().getAsJsonObject();
+                    return gson.fromJson(json, GetQrRes.class);
                 }
             }
             throw new RuntimeException("获取二维码失败");
@@ -48,9 +49,10 @@ public class PadPlusHttpUtil {
             Response<Results> execute = service.checkQr(uuid).execute();
             if (execute.isSuccessful()) {
                 Results body = execute.body();
-                if (body != null) {
+                if (body != null && body.getCode() == 0 && !body.getData().isJsonNull()) {
+                    JsonObject json = body.getData().getAsJsonObject();
 //                    log.debug("body {}",body);
-                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("acctSectResp")) {
+                    if (json.has("acctSectResp")) {
                         return gson.fromJson(body.getData(), CheckQrRes.class);
                     }
                 }
@@ -68,8 +70,13 @@ public class PadPlusHttpUtil {
             if (execute.isSuccessful()) {
                 Results body = execute.body();
                 if (body != null) {
-                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("AddMsgs")) {
-                        return gson.fromJson(body.getData(), SyncMessageRes.class);
+                    log.debug("wxid->{},消息同步信息:{}", wxid, body);
+                    if (body.getCode() == 0 && !body.getData().isJsonNull()) {
+                        JsonObject json = body.getData().getAsJsonObject();
+
+                        if (json.has("AddMsgs")) {
+                            return gson.fromJson(body.getData(), SyncMessageRes.class);
+                        }
                     }
                 }
             }
@@ -80,13 +87,14 @@ public class PadPlusHttpUtil {
     }
 
     //发送文本消息
-    public static SendTextMessageRes SendMessage(PadPlusService service, SendTextMessageReq req){
+    public static SendTextMessageRes SendMessage(PadPlusService service, SendTextMessageReq req) {
         try {
             Response<Results> execute = service.sendTextMessage(req).execute();
             if (execute.isSuccessful()) {
                 Results body = execute.body();
-                if (body != null) {
-                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("AddMsgs")) {
+                if (body != null && body.getCode() == 0 && !body.getData().isJsonNull()) {
+                    JsonObject json = body.getData().getAsJsonObject();
+                    if (json.has("AddMsgs")) {
                         return gson.fromJson(body.getData(), SendTextMessageRes.class);
                     }
                 }
@@ -98,13 +106,14 @@ public class PadPlusHttpUtil {
     }
 
     //发送语音消息
-    public static SendVideoMessageRes SendVoiceMessage(PadPlusService service,SendVoiceMessageReq req){
+    public static SendVideoMessageRes SendVoiceMessage(PadPlusService service, SendVoiceMessageReq req) {
         try {
             Response<Results> execute = service.sendVoiceMessage(req).execute();
             if (execute.isSuccessful()) {
                 Results body = execute.body();
-                if (body != null) {
-                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("AddMsgs")) {
+                if (body != null && body.getCode() == 0 && !body.getData().isJsonNull()) {
+                    JsonObject json = body.getData().getAsJsonObject();
+                    if (json.has("AddMsgs")) {
                         return gson.fromJson(body.getData(), SendVideoMessageRes.class);
                     }
                 }
@@ -122,7 +131,7 @@ public class PadPlusHttpUtil {
             if (execute.isSuccessful()) {
                 Results body = execute.body();
                 if (body != null) {
-                    if (body.getCode() == 0 && body.getData() != null && body.getData().has("AddMsgs")) {
+                    if (body.getCode() == 0 && body.getData() != null && body.getData().getAsJsonObject().has("AddMsgs")) {
                         return gson.fromJson(body.getData(), SendImageMessageRes.class);
                     }
                 }
@@ -133,5 +142,23 @@ public class PadPlusHttpUtil {
         return null;
     }
 
+
+    public static boolean heartBeat(PadPlusService service, String wxid) {
+        try {
+            Response<Results> execute = service.heartBeat(wxid).execute();
+            if (execute.isSuccessful()) {
+                Results body = execute.body();
+                if (body != null) {
+                    log.debug("wxid->{},心跳信息:{}", wxid, body);
+                    if (body.getCode() == 0 && !body.getData().isJsonNull() && body.isSuccess()) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 
 }

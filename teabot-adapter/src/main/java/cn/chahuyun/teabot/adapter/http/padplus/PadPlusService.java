@@ -2,7 +2,6 @@ package cn.chahuyun.teabot.adapter.http.padplus;
 
 import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -30,6 +29,14 @@ public interface PadPlusService {
      */
     @POST("api/Login/CheckQR")
     Call<Results> checkQr(@Query("uuid") String uuid);
+
+    /**
+     * 心跳检测
+     * @param wxid 微信id
+     * @return 结果
+     */
+    @POST("api/Login/HeartBeat")
+    Call<Results> heartBeat(@Query("wxid") String wxid);
 
     /**
      * 同步消息

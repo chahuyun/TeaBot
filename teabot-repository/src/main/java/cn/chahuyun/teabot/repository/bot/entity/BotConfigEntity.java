@@ -7,7 +7,9 @@ import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +23,7 @@ import java.util.Map;
 @Getter
 @Entity
 @Table(name = "b_bot_config")
-public class BotConfigEntity implements BotConfig {
+public class BotConfigEntity implements BotConfig, Serializable {
 
     /**
      * id
@@ -43,13 +45,19 @@ public class BotConfigEntity implements BotConfig {
     /**
      * bot-id
      */
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String botId;
 
     /**
      * bot基础连接地址
      */
     private String baseurl;
+
+    /**
+     * 启动状态
+     */
+    @ColumnDefault("false")
+    private Boolean status = false;
 
     /**
      * 额外参数

@@ -27,4 +27,8 @@ public class BotConfigService {
         return HibernateFactory.selectOne(BotConfigEntity.class, id);
     }
 
+
+    public static BotConfigEntity updateBotConfig(BotConfigEntity config) {
+        return HibernateFactory.merge(config);
+    }
 }

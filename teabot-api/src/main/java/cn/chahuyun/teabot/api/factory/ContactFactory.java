@@ -36,7 +36,7 @@ public interface ContactFactory {
      * 获取群成员
      *
      * @param bot bot
-     * @param group 群
+     * @param groupId 群
      * @param memberId 成员id
      * @param memberName 成员名
      * @param memberAvatar 成员头像

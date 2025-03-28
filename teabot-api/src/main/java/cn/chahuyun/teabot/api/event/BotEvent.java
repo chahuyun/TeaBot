@@ -14,7 +14,7 @@ public interface BotEvent  extends Event{
      * 获取bot
      * @return Bot
      */
-    Bot getBot();
+    Bot bot();
 
 
 }

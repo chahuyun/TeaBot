@@ -47,7 +47,7 @@ public class WeChatBot extends AbstractBot {
     }
 
     @Override
-    public String getAvatar() {
+    public String getGroupAvatar() {
         return avatar;
     }
 

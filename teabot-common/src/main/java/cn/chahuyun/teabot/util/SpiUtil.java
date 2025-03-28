@@ -8,15 +8,15 @@ import java.util.ServiceLoader;
  * @author Moyuyanli
  * @date 2025-3-27 14:47
  */
-public class FactoryUtil {
+public class SpiUtil {
 
     /**
-     * 获取工厂类
-     * @param clazz 工厂类
-     * @return T 工厂
-     * @param <T> 工厂类
+     * 获取interface的实现
+     * @param clazz 接口类
+     * @return T 实现类
+     * @param <T> 接口类
      */
-    public static  <T> T getFactory(Class<T> clazz) {
+    public static  <T> T getImpl(Class<T> clazz) {
         ServiceLoader<?> load = ServiceLoader.load(clazz);
         for (Object o : load) {
             if (o.getClass() == clazz) {

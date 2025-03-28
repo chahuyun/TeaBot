@@ -5,6 +5,9 @@ import cn.chahuyun.teabot.api.message.MessageChain;
 import cn.chahuyun.teabot.api.message.MessageKey;
 import cn.chahuyun.teabot.api.message.SingleMessage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  *
@@ -12,23 +15,39 @@ import cn.chahuyun.teabot.api.message.SingleMessage;
  * @date 2025-3-6 15:37
  */
 public class MessageChainImpl extends AbstractMessageChain implements MessageChain {
+    private final List<SingleMessage> messages;
 
-    /**
-     * 以文本形式返回消息
-     */
+    public MessageChainImpl(List<SingleMessage> messages) {
+        this.messages = new ArrayList<>(messages);
+    }
+
     @Override
     public String content() {
+        // 实现消息链的文本拼接逻辑
+        return messages.stream()
+                .map(SingleMessage::content)
+                .reduce("", String::concat);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <M extends SingleMessage> M get(MessageKey key) {
+        for (SingleMessage message : messages) {
+            if (message.getType().equals(key)) {
+                return (M) message;
+            }
+        }
         return null;
     }
 
-    /**
-     * 根据给定的 {@link MessageKey } 获取对应类型的第一个消息元素
-     *
-     * @param key 消息类型的标识符
-     * @return 对应类型的消息元素，如果没有找到则返回 null
-     */
+    // 实现 List 接口的方法
     @Override
-    public <M extends SingleMessage> M get(MessageKey key) {
-        return null;
+    public int size() {
+        return messages.size();
+    }
+
+    @Override
+    public SingleMessage get(int index) {
+        return messages.get(index);
     }
 }

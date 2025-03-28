@@ -12,7 +12,7 @@ public interface BotPassiveEvent extends BotEvent{
      * 获取动作时间
      * @return long
      */
-    long getTime();
+    long time();
 
 
 }

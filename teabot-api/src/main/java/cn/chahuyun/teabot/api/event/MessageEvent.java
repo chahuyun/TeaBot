@@ -22,7 +22,7 @@ public interface MessageEvent extends BotPassiveEvent,Event {
      * 获取消息发送者
      * @return User
      */
-    User getSender();
+    User sender();
 
     /**
      * 获取消息发送者名称
@@ -34,7 +34,7 @@ public interface MessageEvent extends BotPassiveEvent,Event {
      * 获取消息内容
      * @return MessageChain
      */
-    MessageChain getMessage();
+    MessageChain message();
 
 
 

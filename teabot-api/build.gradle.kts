@@ -11,6 +11,9 @@ repositories {
 }
 
 dependencies {
+
     api(project(":teabot-common"))
+
+//    runtimeOnly(project(":teabot-core"))
 }
 

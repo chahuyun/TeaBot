@@ -5,32 +5,36 @@ import cn.chahuyun.teabot.adapter.http.HttpUtil;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusHttpUtil;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusService;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
+import cn.chahuyun.teabot.api.bot.BotContainer;
 import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.config.BotConfig;
-import cn.chahuyun.teabot.api.contact.Contact;
-import cn.chahuyun.teabot.api.contact.Friend;
-import cn.chahuyun.teabot.api.message.MessageReceipt;
-import cn.chahuyun.teabot.api.message.PlainText;
-import cn.chahuyun.teabot.api.message.SingleMessage;
-import cn.chahuyun.teabot.exp.BotNotLoginException;
+import cn.chahuyun.teabot.api.contact.*;
+import cn.chahuyun.teabot.api.event.EventBus;
+import cn.chahuyun.teabot.api.event.GroupMessageEvent;
+import cn.chahuyun.teabot.api.factory.ContactFactory;
+import cn.chahuyun.teabot.api.factory.MessageEventFactory;
 import cn.chahuyun.teabot.api.message.*;
+import cn.chahuyun.teabot.exp.BotNotLoginException;
 import cn.chahuyun.teabot.util.ImageUtil;
+import cn.chahuyun.teabot.util.SpiUtil;
 import cn.hutool.cron.CronUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import retrofit2.Response;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Base64;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * padPlus的bot适配
@@ -41,6 +45,12 @@ import java.util.regex.Pattern;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 @Slf4j
 public class PadPlusBotAdapter implements BotAdapter, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private static final String heartbeat = "heartbeat-";
+    private static final String syncMessage = "sync-message-";
 
     private transient PadPlusService service;
     private final PadPlusBotConfig config;
@@ -108,6 +118,7 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
      */
     @Override
     public boolean isOnline() {
+        heartbeat();
         return isOnline.get();
     }
 
@@ -118,7 +129,7 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
 
         //在线就报登录成功，返回true
         if (isOnline.get()) {
-            CronUtil.schedule("heartbeat-" + wxid, "0/5 * * * * ?", this::heartbeat);
+            CronUtil.schedule(heartbeat + wxid, "0/5 * * * * ?", this::heartbeat);
             return true;
         }
 
@@ -163,6 +174,7 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
             CheckQrRes res = reference.get();
             if (res == null) {
                 log.debug("bot登录失败!");
+                CronUtil.remove(uuid);
                 return false;
             }
             user = res.getAcctSectResp();
@@ -170,7 +182,7 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
             CronUtil.remove(uuid);
             ImageUtil.close(uuid);
 
-            CronUtil.schedule("heartbeat-" + wxid, "0/5 * * * * ?", this::heartbeat);
+            CronUtil.schedule(heartbeat + wxid, "0/5 * * * * ?", this::heartbeat);
 
             return true;
 
@@ -179,6 +191,7 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
             log.error(e.getMessage(), e);
         }
 
+        CronUtil.remove(uuid);
         return false;
     }
 
@@ -225,35 +238,46 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
         if (!isOnline.get()) {
             throw new BotNotLoginException("bot未登录!");
         }
-        CronUtil.schedule("sync-message-" + wxid, "* * * * * ?", () -> {
+
+        CronUtil.schedule(syncMessage + wxid, "* * * * * ?", () -> {
             try {
                 SyncMessageRes syncMessageRes = PadPlusHttpUtil.syncMessage(service, wxid);
                 if (syncMessageRes == null) {
+                    return;
+                }
+                if (!syncMessageRes.isOnline()) {
+                    downline();
                     return;
                 }
                 for (PadPlusMessage msg : syncMessageRes.getAddMsgs()) {
                     int msgType = msg.getMsgType();
                     switch (msgType) {
                         case 1 -> {
-                            if (Pattern.matches("\\d+@chatroom", msg.getFromUserName().getString())) {
-//                                MessageEventFactory factory = FactoryUtil.getFactory(MessageEventFactory.class);
-//                                factory.createGroupMessageEvent(
-//                                        BotContainer.getBot(wxid),
-//
-//                                )
-//
-//
-//                                GroupMessageEvent.builder()
-//                                        .bot(BotContainer.getBot(wxid))
-//                                        .sender()
-//                                        .message(new PlainText(msg.getContent()))
-//                                        .setSubject(new Group(msg.getToUserName()))
-//                                        .setTime(msg.getCreateTime())
-//                                        .build();
+                            String subject = msg.getFromUserName().getString();
+                            if (Pattern.matches("\\d+@chatroom", subject)) {
+                                MessageEventFactory messageEventFactory = SpiUtil.getImpl(MessageEventFactory.class);
+                                Bot bot = BotContainer.getBot(wxid);
+                                Group group = getGroup(subject);
+
+                                String content = msg.getContent().getString();
+
+                                Matcher matcher = Pattern.compile("^(.*):(.*)").matcher(content);
+                                if (matcher.find()) {
+                                    String userName = matcher.group(1);
+                                    Member member = getMember(group.getId(), userName);
+                                    String message = matcher.group(2);
+                                    MessageChain messageChain = MessageChain.builder().add(PlainText.of(message)).build();
+
+                                    GroupMessageEvent event = messageEventFactory.createGroupMessageEvent(bot,
+                                            group, member, messageChain, msg.getCreateTime());
+
+                                    EventBus bus = SpiUtil.getImpl(EventBus.class);
+                                    bus.fire(event);
+                                }
                             }
                         }
                         default -> {
-
+                            log.warn("暂不支持的消息类型:{}", msgType);
                         }
                     }
                 }
@@ -276,6 +300,54 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
     @Override
     public Friend getFriend(String id) {
         return null;
+    }
+
+    /**
+     * 获取群信息
+     *
+     * @param groupId 群id
+     * @return Group
+     */
+    @Override
+    public Group getGroup(String groupId) {
+        GetGroupInfoRes res = PadPlusHttpUtil.getGroupInfo(service, wxid, groupId);
+        if (res == null) {
+            throw new RuntimeException("获取群信息失败!");
+        }
+
+        ContactFactory impl = SpiUtil.getImpl(ContactFactory.class);
+        Bot bot = BotContainer.getBot(wxid);
+        GetGroupInfoRes.ChatroomData chatroomData = res.getNewChatroomData();
+        List<String> collect = chatroomData.getChatRoomMember().stream().map(
+                GetGroupInfoRes.ChatRoomMember::getUserName
+        ).collect(Collectors.toList());
+        return impl.getGroup(bot, groupId, res.getNickName().getString(), res.getSmallHeadImgUrl(), res.getChatRoomOwner(), collect);
+    }
+
+    /**
+     * 获取群成员信息
+     *
+     * @param groupId  群id
+     * @param memberId 成员id
+     * @return Member
+     */
+    @Override
+    public Member getMember(String groupId, String memberId) {
+        GetGroupMemberInfoRes res = PadPlusHttpUtil.getGroupMemberInfo(service, wxid, groupId);
+        if (res == null) {
+            throw new RuntimeException("获取群信息失败!");
+        }
+
+        ContactFactory impl = SpiUtil.getImpl(ContactFactory.class);
+        Bot bot = BotContainer.getBot(wxid);
+        GetGroupInfoRes.ChatroomData chatroomData = res.getNewChatroomData();
+
+        for (GetGroupInfoRes.ChatRoomMember chatRoomMember : chatroomData.getChatRoomMember()) {
+            if (chatRoomMember.getUserName().equals(memberId)) {
+                return impl.getMember(bot, groupId, memberId, chatRoomMember.getNickName(), chatRoomMember.getSmallHeadImgUrl());
+            }
+        }
+        throw new RuntimeException("未找到成员!");
     }
 
     //====================================private=================================================
@@ -327,8 +399,10 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
         }
     }
 
-    private void contentHandle() {
-
+    private void downline() {
+        isOnline.set(false);
+        CronUtil.remove(syncMessage + wxid);
+        CronUtil.remove(heartbeat + wxid);
     }
 
     //发送文本消息

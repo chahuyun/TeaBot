@@ -2,6 +2,8 @@ package cn.chahuyun.teabot.api.config;
 
 import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
+import cn.chahuyun.teabot.api.contact.Group;
+import cn.chahuyun.teabot.api.contact.Member;
 import cn.chahuyun.teabot.api.message.MessageReceipt;
 
 import java.io.Serializable;
@@ -67,5 +69,20 @@ public interface BotAdapter extends Serializable {
      * @return 好友
      */
     Friend getFriend(String id);
+
+    /**
+     * 获取群信息
+     * @param groupId 群id
+     * @return Group
+     */
+    Group getGroup(String groupId);
+
+    /**
+     * 获取群成员信息
+     * @param groupId 群id
+     * @param memberId 成员id
+     * @return Member
+     */
+    Member getMember(String groupId, String memberId);
 
 }

@@ -46,6 +46,21 @@ public interface PadPlusService {
     @POST("api/Msg/Sync")
     Call<Results> syncMessage(@Body SyncMessageReq req);
 
+    /**
+     * 获取群信息
+     * @param req 请求
+     * @return 结果
+     */
+    @POST("/api/Group/GetChatRoomInfo")
+    Call<Results> getGroup(@Body GetGroupInfoReq req);
+
+    /**
+     * 获取群成员信息
+     * @param req 请求
+     * @return 结果
+     */
+    @POST("/api/Group/GetChatRoomMemberDetail")
+    Call<Results> getGroupMemberInfo(@Body GetGroupMemberInfoReq req);
 
     @POST("api/Msg/SendTxt")
     Call<Results> sendTextMessage(@Body SendTextMessageReq req);

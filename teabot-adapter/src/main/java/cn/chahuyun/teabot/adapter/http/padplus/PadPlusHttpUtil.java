@@ -25,7 +25,8 @@ public class PadPlusHttpUtil {
 
 
         GetQrReq params = new GetQrReq();
-        params.setDeviceID(configuration.getUserId());
+        String userId = configuration.getUserId();
+        params.setDeviceID(userId);
         params.setDeviceName(configuration.getDriverName());
 
         try {
@@ -33,6 +34,7 @@ public class PadPlusHttpUtil {
 
             if (execute.isSuccessful()) {
                 Results body = execute.body();
+                log.debug("userId->{},消息同步信息:{}", userId, body);
                 if (body != null && body.getCode() == 0 && !body.getData().isJsonNull()) {
                     JsonObject json = body.getData().getAsJsonObject();
                     return gson.fromJson(json, GetQrRes.class);
@@ -71,12 +73,16 @@ public class PadPlusHttpUtil {
                 Results body = execute.body();
                 if (body != null) {
                     log.debug("wxid->{},消息同步信息:{}", wxid, body);
-                    if (body.getCode() == 0 && !body.getData().isJsonNull()) {
-                        JsonObject json = body.getData().getAsJsonObject();
+                    if (body.getCode() == 0)
+                        if (!body.getData().isJsonNull()) {
+                            JsonObject json = body.getData().getAsJsonObject();
 
-                        if (json.has("AddMsgs")) {
-                            return gson.fromJson(body.getData(), SyncMessageRes.class);
+                            if (json.has("AddMsgs")) {
+                                return gson.fromJson(body.getData(), SyncMessageRes.class);
+                            }
                         }
+                    if (!body.isSuccess()) {
+                        return new SyncMessageRes().setOnline(false);
                     }
                 }
             }
@@ -85,6 +91,49 @@ public class PadPlusHttpUtil {
         }
         return null;
     }
+
+    public static GetGroupInfoRes getGroupInfo(PadPlusService service, String wxid, String groupId) {
+        try {
+            Response<Results> execute = service.getGroup(new GetGroupInfoReq(groupId, wxid)).execute();
+            if (execute.isSuccessful()) {
+                Results body = execute.body();
+                if (body != null) {
+                    log.debug("wxid->{},获取群信息:{}", wxid, body);
+                    if (body.getCode() == 0)
+                        if (!body.getData().isJsonNull()) {
+                            JsonObject json = body.getData().getAsJsonObject();
+                            return gson.fromJson(json, GetGroupInfoRes.class);
+                        }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+
+    public static GetGroupMemberInfoRes getGroupMemberInfo(PadPlusService service, String wxid, String groupId) {
+        try {
+            Response<Results> execute = service.getGroupMemberInfo(new GetGroupMemberInfoReq(groupId, wxid)).execute();
+            if (execute.isSuccessful()) {
+                Results body = execute.body();
+                if (body != null) {
+                    log.debug("wxid->{},获取群成员信息:{}", wxid, body);
+                    if (body.getCode() == 0)
+                        if (!body.getData().isJsonNull()) {
+                            JsonObject json = body.getData().getAsJsonObject();
+                            return gson.fromJson(json, GetGroupMemberInfoRes.class);
+                        }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+
 
     //发送文本消息
     public static SendTextMessageRes SendMessage(PadPlusService service, SendTextMessageReq req) {
@@ -125,7 +174,7 @@ public class PadPlusHttpUtil {
     }
 
     //发送图片消息
-    public static SendImageMessageRes SendImageMessage(PadPlusService service,SendImageMessageReq req){
+    public static SendImageMessageRes SendImageMessage(PadPlusService service, SendImageMessageReq req) {
         try {
             Response<Results> execute = service.sendImageMessage(req).execute();
             if (execute.isSuccessful()) {

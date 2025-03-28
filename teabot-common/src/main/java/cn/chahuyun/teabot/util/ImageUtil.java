@@ -3,6 +3,11 @@ package cn.chahuyun.teabot.util;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,5 +70,18 @@ public class ImageUtil {
                 frameMap.remove(id);
             }
         });
+    }
+
+
+    /**
+     * 根据图片生成base64编码
+     */
+    public static String  ImageToBase64Converter(String filePath) throws IOException {
+
+        Path path = Paths.get(filePath);
+        byte[] imageData = Files.readAllBytes(path);
+        String base64 = Base64.getEncoder().encodeToString(imageData);
+        System.out.println(base64);
+        return base64;
     }
 }

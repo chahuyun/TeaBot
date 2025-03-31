@@ -4,7 +4,7 @@ plugins {
     id("java")
     id("java-library")
 
-    id("com.gradleup.shadow") version "8.3.6" // 使用最新版本
+    id("com.github.johnrengelman.shadow") version "8.1.1" // 使用最新版本
 }
 
 group = "cn.chahuyun"
@@ -15,27 +15,19 @@ repositories {
 }
 
 subprojects {
-    // 在每个子项目中应用java插件
     apply(plugin = "java")
     apply(plugin = "java-library")
-    apply(plugin = "com.github.johnrengelman.shadow") // 应用 Shadow 插件到每个子模块
-
     repositories {
         mavenCentral()
     }
 
     dependencies {
         implementation("com.google.code.gson:gson:2.9.0")
-
         implementation("org.slf4j:slf4j-api:1.7.36")
         implementation("ch.qos.logback:logback-classic:1.2.11")
-
-
         implementation("cn.hutool:hutool-all:5.8.36")
-
         implementation("org.projectlombok:lombok:1.18.24")
         annotationProcessor("org.projectlombok:lombok:1.18.24")
-
         testImplementation(platform("org.junit:junit-bom:5.9.1"))
         testImplementation("org.junit.jupiter:junit-jupiter")
     }
@@ -47,48 +39,84 @@ subprojects {
 
 // 配置 Shadow JAR 任务
 tasks.withType<ShadowJar> {
-    // 合并所有依赖和子模块的编译输出
-    from(
-        project.configurations.runtimeClasspath.get().map {
-            if (it.isDirectory) it else zipTree(it)
-        }
+    mergeServiceFiles()
+    manifest {
+        attributes("Main-Class" to "cn.chahuyun.teabot.TeaBot")
+    }
+
+    // 合并所有子项目输出
+    subprojects.forEach {
+        from(it.sourceSets["main"].output)
+    }
+
+    // 包含所有运行时依赖（包含子项目的传递依赖）
+    configurations = listOf(
+        project.configurations.runtimeClasspath.get(),
+        *subprojects.map { it.configurations.runtimeClasspath.get() }.toTypedArray()
     )
 
-    // 合并所有子模块的编译输出（排除当前项目）
-    subprojects.forEach { subproject ->
-        if (subproject != project) {
-            from(subproject.sourceSets.main.get().output)
+    // 排除签名文件
+    exclude("META-INF/*.DSA", "META-INF/*.RSA", "META-INF/*.SF")
+
+    // 重要：显式合并所有依赖
+    doFirst {
+        println("正在合并的依赖：")
+        configurations.forEach { config ->
+            config.files.forEach { file ->
+                println("-> ${file.name}")
+            }
         }
     }
-
-    // 确保当前项目的编译输出也被包含
-    from(sourceSets.main.get().output)
-
-    // 配置主类
-    manifest {
-        attributes(mapOf("Main-Class" to "cn.chahuyun.teabot.TeaBot"))
-    }
 }
 
-// 创建复制任务：将 JAR 文件移动到 build/run 目录
+// 复制任务：添加输出声明
 tasks.register<Copy>("copyShadowJarToRunDir") {
-    // 显式指定 ShadowJar 任务类型
     val shadowJarTask = tasks.named<ShadowJar>("shadowJar").get()
-    from(shadowJarTask.archiveFile)
-    into("${layout.buildDirectory.dir("run")}") // 使用 layout.buildDirectory 替代 buildDir
+    val sourceFile = shadowJarTask.archiveFile.get().asFile
 
-    // 确保依赖 shadowJar 任务
+    // 修复1：使用正确的路径声明方式
+    outputs.files(
+        layout.buildDirectory.file("run/${sourceFile.name}")
+    )
+
+    // 修复2：使用Gradle推荐的覆盖方式
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+//    eachFile {
+//        // 正确设置覆盖方式（Gradle 8.x+ 有效）
+//        isOverwrite = true
+//    }
+
+    from(sourceFile)
+    into(layout.buildDirectory.dir("run"))
+
+    doFirst {
+        val targetDir = layout.buildDirectory.dir("run").get().asFile
+        targetDir.takeIf { !it.exists() }?.mkdirs()
+    }
+
+    doLast {
+        val copiedFile = layout.buildDirectory.file("run/${sourceFile.name}").get().asFile
+        logger.lifecycle("成功复制到：${copiedFile.absolutePath}")
+    }
+
     dependsOn(shadowJarTask)
 }
-
-// 配置运行任务
+// 运行任务：使用复制后的路径
 tasks.register<JavaExec>("run") {
     group = "teabot"
     mainClass.set("cn.chahuyun.teabot.TeaBot")
-
     dependsOn("shadowJar", "copyShadowJarToRunDir")
 
-    // 获取复制后的 JAR 文件路径
-    val targetJar = tasks.named<Copy>("copyShadowJarToRunDir").get().outputs.files.singleFile
-    classpath = files(targetJar)
+    // 动态获取复制后的 JAR 路径（关键修改）
+    val copiedJar = tasks.named<Copy>("copyShadowJarToRunDir").get()
+        .outputs.files
+        .filter { it.extension == "jar" }
+
+    classpath = copiedJar
+
+    doFirst {
+        // 安全获取文件路径
+        val targetJar = copiedJar.singleFile
+        logger.lifecycle("实际运行路径：{}", targetJar.absolutePath)
+    }
 }

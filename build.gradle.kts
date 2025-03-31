@@ -59,14 +59,14 @@ tasks.withType<ShadowJar> {
     exclude("META-INF/*.DSA", "META-INF/*.RSA", "META-INF/*.SF")
 
     // 重要：显式合并所有依赖
-    doFirst {
-        println("正在合并的依赖：")
-        configurations.forEach { config ->
-            config.files.forEach { file ->
-                println("-> ${file.name}")
-            }
-        }
-    }
+//    doFirst {
+//        println("正在合并的依赖：")
+//        configurations.forEach { config ->
+//            config.files.forEach { file ->
+//                println("-> ${file.name}")
+//            }
+//        }
+//    }
 }
 
 // 复制任务：添加输出声明

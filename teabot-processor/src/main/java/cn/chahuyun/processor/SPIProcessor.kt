@@ -180,7 +180,10 @@ class SPIProcessor : AbstractProcessor() {
                 processingEnv.filer.createResource(
                     StandardLocation.CLASS_OUTPUT, "", "META-INF/services/$interfaceName"
                 ).openWriter().use { writer ->
-                    implementations.sortedBy { it.alias }.forEach { writer.write("${it.implName}\n") }
+                    implementations
+                        .distinctBy { it.implName }
+                        .sortedBy { it.alias }
+                        .forEach { writer.write("${it.implName}\n") }
                 }
             } catch (e: Exception) {
                 processingEnv.messager.printMessage(

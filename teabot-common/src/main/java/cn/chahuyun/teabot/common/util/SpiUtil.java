@@ -1,5 +1,6 @@
 package cn.chahuyun.teabot.common.util;
 
+import java.util.Iterator;
 import java.util.ServiceLoader;
 
 /**
@@ -17,14 +18,13 @@ public class SpiUtil {
      * @param <T> 接口类
      */
     public static <T> T getImpl(Class<T> clazz) {
-        ServiceLoader<?> load = ServiceLoader.load(clazz);
-        for (Object o : load) {
-            if (o.getClass() == clazz) {
-                return clazz.cast(o);
-            }
+        ServiceLoader<T> loader = ServiceLoader.load(clazz);
+        Iterator<T> iterator = loader.iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
         }
-        String format = String.format("未找到对应的工厂类:%s", clazz.getSimpleName());
-        throw new RuntimeException(format);
+        throw new RuntimeException("未找到对应的工厂类:" + clazz.getSimpleName());
     }
+
 
 }

@@ -47,3 +47,8 @@ bin/
 
 ### teabot ###
 run
+
+/teabot-adapter/src/main/resources/getGroupInfo.json
+/teabot-adapter/src/main/resources/syncMessage.json
+/teabot-adapter/src/main/resources/syncMessageRoom.json
+/teabot.log

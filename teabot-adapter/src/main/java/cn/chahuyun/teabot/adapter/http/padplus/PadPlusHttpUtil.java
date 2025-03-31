@@ -2,6 +2,7 @@ package cn.chahuyun.teabot.adapter.http.padplus;
 
 import cn.chahuyun.teabot.adapter.bot.padplus.PadPlusBotConfig;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import retrofit2.Response;
@@ -34,7 +35,9 @@ public class PadPlusHttpUtil {
 
             if (execute.isSuccessful()) {
                 Results body = execute.body();
-                log.debug("userId->{},消息同步信息:{}", userId, body);
+                if (body != null) {
+                    debug(userId, "消息同步信息", body);
+                }
                 if (body != null && body.getCode() == 0 && !body.getData().isJsonNull()) {
                     JsonObject json = body.getData().getAsJsonObject();
                     return gson.fromJson(json, GetQrRes.class);
@@ -72,12 +75,12 @@ public class PadPlusHttpUtil {
             if (execute.isSuccessful()) {
                 Results body = execute.body();
                 if (body != null) {
-                    log.debug("wxid->{},消息同步信息:{}", wxid, body);
                     if (body.getCode() == 0)
                         if (!body.getData().isJsonNull()) {
                             JsonObject json = body.getData().getAsJsonObject();
 
                             if (json.has("AddMsgs")) {
+                                debug(wxid, "消息同步信息", body);
                                 return gson.fromJson(body.getData(), SyncMessageRes.class);
                             }
                         }
@@ -98,7 +101,7 @@ public class PadPlusHttpUtil {
             if (execute.isSuccessful()) {
                 Results body = execute.body();
                 if (body != null) {
-                    log.debug("wxid->{},获取群信息:{}", wxid, body);
+                    debug(wxid, "获取群信息", body);
                     if (body.getCode() == 0)
                         if (!body.getData().isJsonNull()) {
                             JsonObject json = body.getData().getAsJsonObject();
@@ -119,7 +122,7 @@ public class PadPlusHttpUtil {
             if (execute.isSuccessful()) {
                 Results body = execute.body();
                 if (body != null) {
-                    log.debug("wxid->{},获取群成员信息:{}", wxid, body);
+                    debug(wxid, "获取群成员信息", body);
                     if (body.getCode() == 0)
                         if (!body.getData().isJsonNull()) {
                             JsonObject json = body.getData().getAsJsonObject();
@@ -132,7 +135,6 @@ public class PadPlusHttpUtil {
         }
         return null;
     }
-
 
 
     //发送文本消息
@@ -198,7 +200,7 @@ public class PadPlusHttpUtil {
             if (execute.isSuccessful()) {
                 Results body = execute.body();
                 if (body != null) {
-                    log.debug("wxid->{},心跳信息:{}", wxid, body);
+                    debug(wxid, "心跳信息", body);
                     if (body.getCode() == 0 && !body.getData().isJsonNull() && body.isSuccess()) {
                         return true;
                     }
@@ -208,6 +210,25 @@ public class PadPlusHttpUtil {
             throw new RuntimeException(e);
         }
         return false;
+    }
+
+
+    private static void debug(String wxid, String msg, Results results) {
+        JsonElement data = results.getData();
+        if (!data.isJsonNull()) {
+            JsonObject json = data.getAsJsonObject();
+            if (json.has("KeyBuf")) {
+                json.remove("KeyBuf");
+            } else if (json.has("QrBase64")) {
+                json.remove("QrBase64");
+            }
+//            else if (json.has("QrCode")) {
+//                json.remove("QrCode");
+//            }
+            log.debug("wxid->{},{}:,返回信息:{}", wxid, msg, json);
+        } else {
+            log.debug("wxid->{},{}:,返回信息:{}", wxid, msg, "");
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package cn.chahuyun.teabot.api.bot;
 
 import cn.chahuyun.teabot.api.contact.Bot;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @author Moyuyanli
  */
+@Slf4j
 public class BotContainer {
 
     // 使用线程安全的 ConcurrentHashMap
@@ -33,6 +35,7 @@ public class BotContainer {
         if (botMap.containsKey(botId)) {
             throw new IllegalArgumentException("Bot with ID [" + botId + "] already exists");
         }
+        log.debug("bot 容器添加bot,id->{}",botId);
         botMap.put(botId, bot);
     }
 

@@ -18,10 +18,10 @@ public abstract class AbstractBot implements Bot {
     private final BotAdapter adapter;
     private final String id;
 
-    public AbstractBot(String id, BotAdapter adapter, BotType botType) {
+    public AbstractBot(BotAdapter adapter, BotType botType) {
         this.adapter = adapter;
         this.botType = botType;
-        this.id = id;
+        this.id = adapter.getId();
     }
 
     /**

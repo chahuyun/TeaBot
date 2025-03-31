@@ -27,7 +27,7 @@ public class WeChatBot extends AbstractBot {
     private String avatar;
 
     public WeChatBot(BotConfig config, BotAdapter adapter) {
-        super(config.getUserId(), adapter, BotType.PAD_PLUS);
+        super(adapter, BotType.PAD_PLUS);
     }
 
 

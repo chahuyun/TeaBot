@@ -1,6 +1,6 @@
 package cn.chahuyun.teabot.api.dto;
 
-import cn.chahuyun.teabot.util.GsonUtil;
+import cn.chahuyun.teabot.common.util.GsonUtil;
 import lombok.Data;
 
 /**

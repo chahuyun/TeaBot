@@ -5,10 +5,10 @@ import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.config.BotConfig;
 import cn.chahuyun.teabot.api.contact.Bot;
 import cn.chahuyun.teabot.api.factory.BotAdapterFactory;
-import cn.chahuyun.teabot.conf.bot.BotType;
+import cn.chahuyun.teabot.common.conf.bot.BotType;
 import cn.chahuyun.teabot.core.bot.cache.BotCache;
-import cn.chahuyun.teabot.exp.AdapterException;
-import cn.chahuyun.teabot.exp.BotNotLoginException;
+import cn.chahuyun.teabot.common.exp.AdapterException;
+import cn.chahuyun.teabot.common.exp.BotNotLoginException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 package cn.chahuyun.teabot.core.bot;
 
 import cn.chahuyun.teabot.api.config.BotConfig;
-import cn.chahuyun.teabot.conf.bot.BotType;
+import cn.chahuyun.teabot.common.conf.bot.BotType;
 import lombok.Setter;
 
 import java.util.HashMap;

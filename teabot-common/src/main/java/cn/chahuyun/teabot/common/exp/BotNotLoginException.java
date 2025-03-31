@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.exp;
+package cn.chahuyun.teabot.common.exp;
 
 /**
  *

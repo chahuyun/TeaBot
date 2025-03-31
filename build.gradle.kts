@@ -74,29 +74,20 @@ tasks.register<Copy>("copyShadowJarToRunDir") {
     val shadowJarTask = tasks.named<ShadowJar>("shadowJar").get()
     val sourceFile = shadowJarTask.archiveFile.get().asFile
 
-    // 修复1：使用正确的路径声明方式
     outputs.files(
-        layout.buildDirectory.file("run/${sourceFile.name}")
+        project.rootProject.layout.projectDirectory.file("run/${sourceFile.name}")
     )
 
-    // 修复2：使用Gradle推荐的覆盖方式
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
-//    eachFile {
-//        // 正确设置覆盖方式（Gradle 8.x+ 有效）
-//        isOverwrite = true
-//    }
 
     from(sourceFile)
-    into(layout.buildDirectory.dir("run"))
+    into(project.rootProject.layout.projectDirectory.dir("run"))
 
     doFirst {
-        val targetDir = layout.buildDirectory.dir("run").get().asFile
-        targetDir.takeIf { !it.exists() }?.mkdirs()
-    }
-
-    doLast {
-        val copiedFile = layout.buildDirectory.file("run/${sourceFile.name}").get().asFile
-        logger.lifecycle("成功复制到：${copiedFile.absolutePath}")
+        val targetDir = project.rootProject.layout.projectDirectory.dir("run").asFile
+        if (!targetDir.exists()) {
+            targetDir.mkdirs()
+        }
     }
 
     dependsOn(shadowJarTask)
@@ -107,16 +98,12 @@ tasks.register<JavaExec>("run") {
     mainClass.set("cn.chahuyun.teabot.TeaBot")
     dependsOn("shadowJar", "copyShadowJarToRunDir")
 
-    // 动态获取复制后的 JAR 路径（关键修改）
-    val copiedJar = tasks.named<Copy>("copyShadowJarToRunDir").get()
-        .outputs.files
-        .filter { it.extension == "jar" }
+    val copiedJar = project.rootProject.layout.projectDirectory
+        .file("run/${tasks.shadowJar.get().archiveFileName.get()}")
 
-    classpath = copiedJar
+    classpath = files(copiedJar)
 
     doFirst {
-        // 安全获取文件路径
-        val targetJar = copiedJar.singleFile
-        logger.lifecycle("实际运行路径：{}", targetJar.absolutePath)
+        logger.lifecycle("实际运行路径：${copiedJar.asFile.absolutePath}")
     }
 }

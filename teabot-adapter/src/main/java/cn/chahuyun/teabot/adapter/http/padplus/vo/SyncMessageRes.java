@@ -20,6 +20,12 @@ public class SyncMessageRes {
 
     private boolean isOnline = true;
 
+    public List<PadPlusMessage> getAddMsgs() {
+        if (AddMsgs == null) {
+            return List.of();
+        }
+        return AddMsgs;
+    }
 }
 
 

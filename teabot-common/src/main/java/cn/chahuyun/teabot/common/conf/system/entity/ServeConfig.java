@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.conf.system.entity;
+package cn.chahuyun.teabot.common.conf.system.entity;
 
 import lombok.Getter;
 import lombok.Setter;

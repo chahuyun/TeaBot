@@ -3,9 +3,9 @@ package cn.chahuyun.teabot.repository;
 import cn.chahuyun.hibernateplus.Configuration;
 import cn.chahuyun.hibernateplus.DriveType;
 import cn.chahuyun.hibernateplus.HibernatePlusService;
-import cn.chahuyun.teabot.conf.system.ConfigService;
-import cn.chahuyun.teabot.conf.system.entity.DataConfig;
-import cn.chahuyun.teabot.conf.system.entity.SystemConfig;
+import cn.chahuyun.teabot.common.conf.system.ConfigService;
+import cn.chahuyun.teabot.common.conf.system.entity.DataConfig;
+import cn.chahuyun.teabot.common.conf.system.entity.SystemConfig;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,7 +31,7 @@ public class RepositoryLoader {
         try {
             HibernatePlusService.loadingService(configuration);
         } catch (Exception e) {
-            log.error("数据库连接失败", e);
+            throw new RuntimeException("数据库连接失败,请检查配置后重新启动 teabot !");
         }
     }
 

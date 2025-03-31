@@ -17,5 +17,5 @@ public @interface SPI {
     /**
      * 对应的接口类（可选，若实现类只实现一个接口则可省略）
      */
-    Class<?> interfaceClass() default void.class; // 默认值改为 void.class 表示未指定
+    Class<?> interfaceClass() default Void.class; // 默认值改为 void.class 表示未指定
 }

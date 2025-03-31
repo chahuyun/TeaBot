@@ -4,8 +4,8 @@ package cn.chahuyun.teabot.api.app;
 import cn.chahuyun.teabot.api.app.web.AuthFilter;
 import cn.chahuyun.teabot.api.app.web.BotController;
 import cn.chahuyun.teabot.api.app.web.ExceptionHandle;
-import cn.chahuyun.teabot.conf.system.ConfigService;
-import cn.chahuyun.teabot.conf.system.entity.SystemConfig;
+import cn.chahuyun.teabot.common.conf.system.ConfigService;
+import cn.chahuyun.teabot.common.conf.system.entity.SystemConfig;
 import cn.chahuyun.teabot.repository.RepositoryLoader;
 import spark.Spark;
 

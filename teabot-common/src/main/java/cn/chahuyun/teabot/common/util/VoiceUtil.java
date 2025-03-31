@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.util;
+package cn.chahuyun.teabot.common.util;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;

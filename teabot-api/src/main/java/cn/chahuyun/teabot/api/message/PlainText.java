@@ -1,7 +1,7 @@
 package cn.chahuyun.teabot.api.message;
 
 import cn.chahuyun.teabot.api.factory.SingleMessageFactory;
-import cn.chahuyun.teabot.util.SpiUtil;
+import cn.chahuyun.teabot.common.util.SpiUtil;
 
 /**
  *

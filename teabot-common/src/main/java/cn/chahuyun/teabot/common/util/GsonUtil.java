@@ -1,6 +1,6 @@
-package cn.chahuyun.teabot.util;
+package cn.chahuyun.teabot.common.util;
 
-import cn.chahuyun.teabot.conf.json.ExcludeExposedFieldsStrategy;
+import cn.chahuyun.teabot.common.conf.json.ExcludeExposedFieldsStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

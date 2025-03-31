@@ -1,6 +1,6 @@
 package cn.chahuyun.teabot.system;
 
-import cn.chahuyun.teabot.conf.system.TeaBotFileCore;
+import cn.chahuyun.teabot.common.conf.system.TeaBotFileCore;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;

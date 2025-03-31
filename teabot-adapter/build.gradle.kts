@@ -15,4 +15,6 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     api(project(":teabot-api"))
+    compileOnly(project(":teabot-processor"))
+    annotationProcessor(project(":teabot-processor"))
 }

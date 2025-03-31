@@ -1,7 +1,7 @@
 package cn.chahuyun.teabot.core.bot.cache;
 
 import cn.chahuyun.teabot.api.config.BotAdapter;
-import cn.chahuyun.teabot.conf.system.TeaBotFileCore;
+import cn.chahuyun.teabot.common.conf.system.TeaBotFileCore;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;

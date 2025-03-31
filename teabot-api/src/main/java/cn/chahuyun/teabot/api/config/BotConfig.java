@@ -1,6 +1,6 @@
 package cn.chahuyun.teabot.api.config;
 
-import cn.chahuyun.teabot.conf.bot.BotType;
+import cn.chahuyun.teabot.common.conf.bot.BotType;
 
 import java.io.Serializable;
 

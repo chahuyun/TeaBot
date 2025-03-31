@@ -2,7 +2,7 @@ package cn.chahuyun.teabot.api.factory;
 
 import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.config.BotConfig;
-import cn.chahuyun.teabot.conf.bot.BotType;
+import cn.chahuyun.teabot.common.conf.bot.BotType;
 
 /**
  *

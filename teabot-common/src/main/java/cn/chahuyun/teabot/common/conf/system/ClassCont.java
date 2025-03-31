@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.conf.system;
+package cn.chahuyun.teabot.common.conf.system;
 
 /**
  * 类型常量

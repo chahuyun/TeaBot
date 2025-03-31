@@ -2,7 +2,7 @@ package cn.chahuyun.teabot.repository.bot.entity;
 
 
 import cn.chahuyun.teabot.api.config.BotConfig;
-import cn.chahuyun.teabot.conf.bot.BotType;
+import cn.chahuyun.teabot.common.conf.bot.BotType;
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import lombok.Getter;

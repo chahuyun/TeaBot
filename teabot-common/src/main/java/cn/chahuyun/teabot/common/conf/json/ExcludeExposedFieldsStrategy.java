@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.conf.json;
+package cn.chahuyun.teabot.common.conf.json;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;

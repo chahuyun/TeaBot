@@ -5,7 +5,7 @@ import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.config.BotConfig;
 import cn.chahuyun.teabot.api.contact.Bot;
 import cn.chahuyun.teabot.api.contact.Friend;
-import cn.chahuyun.teabot.conf.bot.BotType;
+import cn.chahuyun.teabot.common.conf.bot.BotType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

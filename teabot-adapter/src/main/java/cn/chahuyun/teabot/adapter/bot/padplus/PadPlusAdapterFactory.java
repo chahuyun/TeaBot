@@ -3,7 +3,7 @@ package cn.chahuyun.teabot.adapter.bot.padplus;
 import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.config.BotConfig;
 import cn.chahuyun.teabot.api.factory.BotAdapterFactory;
-import cn.chahuyun.teabot.conf.bot.BotType;
+import cn.chahuyun.teabot.common.conf.bot.BotType;
 
 /**
  *

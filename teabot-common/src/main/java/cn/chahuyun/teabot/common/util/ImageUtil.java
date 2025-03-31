@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.util;
+package cn.chahuyun.teabot.common.util;
 
 import javax.swing.*;
 import java.awt.*;

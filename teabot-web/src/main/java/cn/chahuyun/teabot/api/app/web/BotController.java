@@ -4,7 +4,7 @@ import cn.chahuyun.teabot.api.dto.R;
 import cn.chahuyun.teabot.core.bot.server.BotServer;
 import cn.chahuyun.teabot.repository.bot.entity.BotConfigEntity;
 import cn.chahuyun.teabot.repository.server.bot.BotConfigService;
-import cn.chahuyun.teabot.util.GsonUtil;
+import cn.chahuyun.teabot.common.util.GsonUtil;
 import cn.hutool.core.bean.BeanUtil;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;

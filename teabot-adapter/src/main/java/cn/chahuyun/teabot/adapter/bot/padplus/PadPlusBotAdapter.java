@@ -14,9 +14,9 @@ import cn.chahuyun.teabot.api.event.GroupMessageEvent;
 import cn.chahuyun.teabot.api.factory.ContactFactory;
 import cn.chahuyun.teabot.api.factory.MessageEventFactory;
 import cn.chahuyun.teabot.api.message.*;
-import cn.chahuyun.teabot.exp.BotNotLoginException;
-import cn.chahuyun.teabot.util.ImageUtil;
-import cn.chahuyun.teabot.util.SpiUtil;
+import cn.chahuyun.teabot.common.exp.BotNotLoginException;
+import cn.chahuyun.teabot.common.util.ImageUtil;
+import cn.chahuyun.teabot.common.util.SpiUtil;
 import cn.hutool.cron.CronUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -277,7 +277,7 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
                             }
                         }
                         default -> {
-                            log.warn("暂不支持的消息类型:{}", msgType);
+                            log.debug("暂不支持的消息类型:{}", msgType);
                         }
                     }
                 }

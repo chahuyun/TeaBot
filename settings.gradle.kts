@@ -17,4 +17,12 @@ pluginManagement {
         // 或使用阿里云 Maven 镜像（国内推荐）
         maven { url = uri("https://maven.aliyun.com/repository/public") }
     }
+    plugins {
+        kotlin("jvm") version "2.0.10"
+    }
 }
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
+}
+include("processor")
+include("teabot-processor")

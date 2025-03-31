@@ -1,4 +1,4 @@
-package cn.chahuyun.teabot.util;
+package cn.chahuyun.teabot.common.util;
 
 import java.util.ServiceLoader;
 
@@ -16,14 +16,15 @@ public class SpiUtil {
      * @return T 实现类
      * @param <T> 接口类
      */
-    public static  <T> T getImpl(Class<T> clazz) {
+    public static <T> T getImpl(Class<T> clazz) {
         ServiceLoader<?> load = ServiceLoader.load(clazz);
         for (Object o : load) {
             if (o.getClass() == clazz) {
                 return clazz.cast(o);
             }
         }
-        throw new RuntimeException("未找到对应的工厂类");
+        String format = String.format("未找到对应的工厂类:%s", clazz.getSimpleName());
+        throw new RuntimeException(format);
     }
 
 }

@@ -1,10 +1,10 @@
-package cn.chahuyun.teabot.conf.system;
+package cn.chahuyun.teabot.common.conf.system;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import cn.chahuyun.teabot.conf.system.entity.LoggersConfig;
-import cn.chahuyun.teabot.conf.system.entity.SystemConfig;
-import cn.chahuyun.teabot.util.GsonUtil;
+import cn.chahuyun.teabot.common.conf.system.entity.LoggersConfig;
+import cn.chahuyun.teabot.common.conf.system.entity.SystemConfig;
+import cn.chahuyun.teabot.common.util.GsonUtil;
 import cn.hutool.core.io.FileUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

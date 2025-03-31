@@ -1,6 +1,6 @@
-package cn.chahuyun.teabot.conf.system;
+package cn.chahuyun.teabot.common.conf.system;
 
-import cn.chahuyun.teabot.conf.system.entity.SystemConfig;
+import cn.chahuyun.teabot.common.conf.system.entity.SystemConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

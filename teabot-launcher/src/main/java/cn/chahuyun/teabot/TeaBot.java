@@ -1,12 +1,13 @@
 package cn.chahuyun.teabot;
 
 import cn.chahuyun.teabot.api.app.RestApplication;
+import cn.chahuyun.teabot.api.bot.BotContainer;
 import cn.chahuyun.teabot.api.contact.Bot;
 import cn.chahuyun.teabot.api.contact.Friend;
 import cn.chahuyun.teabot.bot.BotCacheReload;
 import cn.chahuyun.teabot.common.conf.system.ConfigService;
-import cn.chahuyun.teabot.api.bot.BotContainer;
 import cn.chahuyun.teabot.core.event.EventChannelLoader;
+import cn.chahuyun.teabot.experiment.SimpleExperiment;
 import cn.chahuyun.teabot.repository.RepositoryLoader;
 import cn.chahuyun.teabot.system.Banner;
 import cn.hutool.cron.CronUtil;
@@ -45,6 +46,8 @@ public class TeaBot {
             }
         }
 
+
+        SimpleExperiment.tes();
 
     }
 

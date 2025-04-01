@@ -22,7 +22,7 @@ import java.util.Map;
 @Setter
 @Getter
 @Entity
-@Table(name = "b_bot_config")
+@Table(name = "tb_bot_config")
 public class BotConfigEntity implements BotConfig, Serializable {
 
     /**

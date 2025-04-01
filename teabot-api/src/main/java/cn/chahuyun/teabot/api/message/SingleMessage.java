@@ -1,5 +1,7 @@
 package cn.chahuyun.teabot.api.message;
 
+import cn.chahuyun.teabot.common.message.MessageKey;
+
 /**
  * 单个消息
  *

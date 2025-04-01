@@ -23,6 +23,6 @@ public interface ContactOrBot {
 
     String getName();
 
-    String getGroupAvatar();
+    String getAvatar();
 
 }

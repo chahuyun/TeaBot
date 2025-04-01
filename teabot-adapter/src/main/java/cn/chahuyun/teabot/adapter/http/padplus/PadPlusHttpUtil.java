@@ -104,7 +104,7 @@ public class PadPlusHttpUtil {
                     debug(wxid, "获取群信息", body);
                     if (body.getCode() == 0)
                         if (!body.getData().isJsonNull()) {
-                            JsonObject json = body.getData().getAsJsonObject();
+                            JsonObject json = body.getData().getAsJsonObject().getAsJsonArray("ContactList").get(0).getAsJsonObject();
                             return gson.fromJson(json, GetGroupInfoRes.class);
                         }
                 }

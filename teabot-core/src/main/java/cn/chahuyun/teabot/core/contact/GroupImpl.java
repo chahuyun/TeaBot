@@ -4,6 +4,7 @@ import cn.chahuyun.teabot.api.contact.Bot;
 import cn.chahuyun.teabot.api.contact.Group;
 import cn.chahuyun.teabot.api.contact.Member;
 import cn.chahuyun.teabot.api.message.MessageChain;
+import cn.chahuyun.teabot.core.message.MessageReceiptImpl;
 import lombok.Getter;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public class GroupImpl implements Group {
         return groupName;
     }
 
-    public String getGroupAvatar() {
+    public String getAvatar() {
         return groupAvatar;
     }
 
@@ -96,6 +97,7 @@ public class GroupImpl implements Group {
      */
     @Override
     public void sendMessage(MessageChain message) {
-        //todo 在这里实现发送消息
+        MessageReceiptImpl<Group> receipt = new MessageReceiptImpl<>(message, this);
+        getBot().getAdapter().sendMessage(receipt);
     }
 }

@@ -93,7 +93,7 @@ public class GroupMessageEventImpl implements GroupMessageEvent {
      * @return User
      */
     @Override
-    public User sender() {
+    public User getSender() {
         return sender;
     }
 
@@ -113,7 +113,17 @@ public class GroupMessageEventImpl implements GroupMessageEvent {
      * @return MessageChain
      */
     @Override
-    public MessageChain message() {
+    public MessageChain getMessageChain() {
         return message;
+    }
+
+    /**
+     * 向那个载体发送消息
+     *
+     * @param messageChain 消息
+     */
+    @Override
+    public void sendMessage(MessageChain messageChain) {
+        getGroup().sendMessage(messageChain);
     }
 }

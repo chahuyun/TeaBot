@@ -1,5 +1,7 @@
 package cn.chahuyun.teabot.api.message;
 
+import cn.chahuyun.teabot.common.message.MessageKey;
+
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -26,6 +28,7 @@ public interface MessageChain extends Message, List<SingleMessage> {
      */
     interface Builder {
         Builder add(SingleMessage message);
+
         MessageChain build();
     }
 
@@ -37,6 +40,18 @@ public interface MessageChain extends Message, List<SingleMessage> {
         ServiceLoader<Builder> loader = ServiceLoader.load(Builder.class);
         return loader.findFirst()
                 .orElseThrow(() -> new RuntimeException("未找到生成器实现!"));
+    }
+
+    /**
+     * 将消息直接转换为文本
+     * @return 文本
+     */
+    default String content() {
+        StringBuilder builder = new StringBuilder();
+        for (SingleMessage message : this) {
+            builder.append(message.content());
+        }
+        return builder.toString();
     }
 
 }

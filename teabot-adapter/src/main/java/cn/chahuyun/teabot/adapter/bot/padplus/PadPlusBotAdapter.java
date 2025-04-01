@@ -15,6 +15,7 @@ import cn.chahuyun.teabot.api.factory.ContactFactory;
 import cn.chahuyun.teabot.api.factory.MessageEventFactory;
 import cn.chahuyun.teabot.api.message.*;
 import cn.chahuyun.teabot.common.exp.BotNotLoginException;
+import cn.chahuyun.teabot.common.message.MessageKey;
 import cn.chahuyun.teabot.common.util.ImageUtil;
 import cn.chahuyun.teabot.common.util.SpiUtil;
 import cn.hutool.cron.CronUtil;
@@ -208,11 +209,13 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
      */
     @Override
     public <C extends Contact> boolean sendMessage(MessageReceipt<C> receipt) {
-        for (SingleMessage singleMessage : receipt.getMessageChain()) {
-            switch (singleMessage.getType()) {
+        MessageChain messageChain = receipt.getMessageChain();
+        for (SingleMessage singleMessage : messageChain) {
+            MessageKey type = singleMessage.getType();
+            switch (type) {
                 case PLAIN_TEXT:
                     handleText(singleMessage, receipt.getTarget());
-                    log.info("成功发送语音消息");
+                    log.info("成功发送文本音消息");
                     break;
                 case IMAGE:
                     handleImage(singleMessage, receipt.getTarget());
@@ -261,15 +264,24 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
 
                                 String content = msg.getContent().getString();
 
-                                Matcher matcher = Pattern.compile("^(.*):(.*)").matcher(content);
+                                // 使用非贪婪匹配 + 跨行模式
+                                Matcher matcher = Pattern.compile("^(.*?):([\\s\\S]*)", Pattern.DOTALL).matcher(content);
                                 if (matcher.find()) {
-                                    String userName = matcher.group(1);
-                                    Member member = getMember(group.getId(), userName);
-                                    String message = matcher.group(2);
-                                    MessageChain messageChain = MessageChain.builder().add(PlainText.of(message)).build();
+                                    // 提取用户名（清理前后空格）
+                                    String userName = matcher.group(1).trim();
 
-                                    GroupMessageEvent event = messageEventFactory.createGroupMessageEvent(bot,
-                                            group, member, messageChain, msg.getCreateTime());
+                                    // 提取消息内容，并精准删除首个换行符
+                                    String message = matcher.group(2).replaceFirst("^\\n", "");
+
+                                    // 后续业务逻辑...
+                                    Member member = getMember(group.getId(), userName);
+                                    MessageChain messageChain = MessageChain.builder()
+                                            .add(PlainText.of(message))
+                                            .build();
+
+                                    GroupMessageEvent event = messageEventFactory.createGroupMessageEvent(
+                                            bot, group, member, messageChain, msg.getCreateTime()
+                                    );
 
                                     EventBus bus = SpiUtil.getImpl(EventBus.class);
                                     bus.fire(event);

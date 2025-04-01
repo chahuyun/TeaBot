@@ -61,7 +61,7 @@ public class MemberImpl implements Member {
     }
 
     @Override
-    public String getGroupAvatar() {
+    public String getAvatar() {
         return null;
     }
 

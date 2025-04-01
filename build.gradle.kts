@@ -3,6 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     id("java")
     id("java-library")
+//    kotlin("jvm") version "1.9.22"
 
     id("com.github.johnrengelman.shadow") version "8.1.1" // 使用最新版本
 }
@@ -17,6 +18,7 @@ repositories {
 subprojects {
     apply(plugin = "java")
     apply(plugin = "java-library")
+
     repositories {
         mavenCentral()
     }

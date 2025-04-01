@@ -1,7 +1,7 @@
 package cn.chahuyun.teabot.core.bot;
 
 
-import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.api.bot.BotAdapter;
 import cn.chahuyun.teabot.api.config.BotConfig;
 import cn.chahuyun.teabot.api.contact.Bot;
 import cn.chahuyun.teabot.api.contact.Friend;
@@ -22,10 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class WeChatBot extends AbstractBot {
 
 
-    private String name;
-
-    private String avatar;
-
     public WeChatBot(BotConfig config, BotAdapter adapter) {
         super(adapter, BotType.PAD_PLUS);
     }
@@ -39,16 +35,6 @@ public class WeChatBot extends AbstractBot {
     @Override
     public Bot getBot() {
         return this;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getAvatar() {
-        return avatar;
     }
 
     /**

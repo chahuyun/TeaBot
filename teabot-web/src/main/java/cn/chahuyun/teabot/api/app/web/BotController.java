@@ -1,10 +1,10 @@
 package cn.chahuyun.teabot.api.app.web;
 
 import cn.chahuyun.teabot.api.dto.R;
+import cn.chahuyun.teabot.common.util.GsonUtil;
 import cn.chahuyun.teabot.core.bot.server.BotServer;
 import cn.chahuyun.teabot.repository.bot.entity.BotConfigEntity;
 import cn.chahuyun.teabot.repository.server.bot.BotConfigService;
-import cn.chahuyun.teabot.common.util.GsonUtil;
 import cn.hutool.core.bean.BeanUtil;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class BotController {
         if (botId.isEmpty() || botId.isBlank()) {
             return R.error("botId不能为空!");
         }
-        return R.ok("添加成功", BotConfigService.getBotConfig(botId));
+        return R.ok("查询成功", BotConfigService.getBotConfig(botId));
     }
 
 

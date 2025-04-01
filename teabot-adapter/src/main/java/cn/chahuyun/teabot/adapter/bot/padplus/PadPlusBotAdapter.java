@@ -5,8 +5,8 @@ import cn.chahuyun.teabot.adapter.http.HttpUtil;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusHttpUtil;
 import cn.chahuyun.teabot.adapter.http.padplus.PadPlusService;
 import cn.chahuyun.teabot.adapter.http.padplus.vo.*;
+import cn.chahuyun.teabot.api.bot.BotAdapter;
 import cn.chahuyun.teabot.api.bot.BotContainer;
-import cn.chahuyun.teabot.api.config.BotAdapter;
 import cn.chahuyun.teabot.api.config.BotConfig;
 import cn.chahuyun.teabot.api.contact.*;
 import cn.chahuyun.teabot.api.event.EventBus;
@@ -62,7 +62,7 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
      */
     private final AtomicBoolean isOnline = new AtomicBoolean(false);
 
-    @Getter
+
     @Setter
     private WeChatUser user;
 
@@ -124,14 +124,14 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
     }
 
     @Override
-    public boolean login() {
+    public User login() {
         //登录时检测一次心跳
         heartbeat();
 
         //在线就报登录成功，返回true
         if (isOnline.get()) {
             CronUtil.schedule(heartbeat + wxid, "0/5 * * * * ?", this::heartbeat);
-            return true;
+            return user;
         }
 
         //不在线进行用户登录流程
@@ -169,23 +169,24 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
                 Thread.currentThread().interrupt(); // 恢复中断状态
                 log.error("等待检测登录二维码超时!uuid->{}", uuid);
                 CronUtil.remove(uuid);
-                return false;
+                return null;
             }
 
             CheckQrRes res = reference.get();
             if (res == null) {
                 log.debug("bot登录失败!");
                 CronUtil.remove(uuid);
-                return false;
+                return null;
             }
             user = res.getAcctSectResp();
+
             wxid = user.getUserName();
             CronUtil.remove(uuid);
             ImageUtil.close(uuid);
 
             CronUtil.schedule(heartbeat + wxid, "0/5 * * * * ?", this::heartbeat);
 
-            return true;
+            return user;
 
 
         } catch (IOException e) {
@@ -193,7 +194,7 @@ public class PadPlusBotAdapter implements BotAdapter, Serializable {
         }
 
         CronUtil.remove(uuid);
-        return false;
+        return null;
     }
 
     @Override

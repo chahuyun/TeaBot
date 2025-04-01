@@ -1,9 +1,7 @@
-package cn.chahuyun.teabot.api.config;
+package cn.chahuyun.teabot.api.bot;
 
-import cn.chahuyun.teabot.api.contact.Contact;
-import cn.chahuyun.teabot.api.contact.Friend;
-import cn.chahuyun.teabot.api.contact.Group;
-import cn.chahuyun.teabot.api.contact.Member;
+import cn.chahuyun.teabot.api.config.BotConfig;
+import cn.chahuyun.teabot.api.contact.*;
 import cn.chahuyun.teabot.api.message.MessageReceipt;
 
 import java.io.Serializable;
@@ -41,9 +39,9 @@ public interface BotAdapter extends Serializable {
 
     /**
      * 登录
-     * @return true 成功
+     * @return User 机器人的信息
      */
-    boolean login();
+    User login();
 
     /**
      * 登出

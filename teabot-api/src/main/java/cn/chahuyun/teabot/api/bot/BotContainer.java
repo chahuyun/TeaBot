@@ -32,7 +32,7 @@ public class BotContainer {
             throw new IllegalArgumentException("Bot cannot be null");
         }
         String botId = bot.getId();
-        if (botMap.containsKey(botId)) {
+        if (!botMap.containsKey(botId)) {
             throw new IllegalArgumentException("Bot with ID [" + botId + "] already exists");
         }
         log.debug("bot 容器添加bot,id->{}",botId);

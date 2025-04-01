@@ -1,5 +1,7 @@
 package cn.chahuyun.teabot.adapter.bot;
 
+import cn.chahuyun.teabot.api.contact.Bot;
+import cn.chahuyun.teabot.api.contact.User;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,7 +13,7 @@ import java.io.Serializable;
  * @date 2025-3-3 16:09
  */
 @Data
-public class WeChatUser implements Serializable {
+public class WeChatUser implements Serializable, User {
 
     /**
      * 微信id
@@ -29,6 +31,40 @@ public class WeChatUser implements Serializable {
      * 绑定手机号
      */
     private String bindMobile;
+    /**
+     * 头像
+     */
+    private String avatar;
+
+    /**
+     * 用户id，不限于微信id
+     *
+     * @return 用户id
+     */
+    @Override
+    public String getId() {
+        return userName;
+    }
+
+    /**
+     * 所属bot
+     *
+     * @return bot
+     */
+    @Override
+    public Bot getBot() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return nickName;
+    }
+
+    @Override
+    public String getAvatar() {
+        return null;
+    }
 
 
    /* {

@@ -16,15 +16,15 @@ public class SimpleExperiment {
 
     public static void tes() {
 
-        GlobalEventChannel.subscribe(GroupMessageEvent.class)
+        GlobalEventChannel.filterIsInstance(GroupMessageEvent.class)
                 .filter(event -> {
                     String content = event.getMessageChain().content();
                     log.info("收到消息->{}", content);
                     return content.equals("测试");
                 })
-                .handle((event, context) -> {
+                .subscribeOnce((event, context) -> {
                     event.sendMessage("成功!");
-                });
+        });
 
     }
 

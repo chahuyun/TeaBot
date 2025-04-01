@@ -1,14 +1,12 @@
 package cn.chahuyun.teabot.core.event;
 
-import lombok.Getter;
-
 /**
  * 事件优先级枚举
  *
  * @author Moyuyanli
  * @date 2025-3-7 9:53
  */
-@Getter
+@SuppressWarnings("LombokGetterMayBeUsed")
 public enum EventPriorityEnum {
 
     /**
@@ -41,4 +39,7 @@ public enum EventPriorityEnum {
         this.priority = priority;
     }
 
+    public int getPriority() {
+        return priority;
+    }
 }

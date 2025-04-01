@@ -1,8 +1,9 @@
 package cn.chahuyun.teabot.adapter.bot.gewe;
 
-import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.api.bot.BotAdapter;
 import cn.chahuyun.teabot.api.contact.Contact;
 import cn.chahuyun.teabot.api.contact.Friend;
+import cn.chahuyun.teabot.api.contact.User;
 import cn.chahuyun.teabot.api.message.MessageReceipt;
 
 /**
@@ -15,8 +16,8 @@ public abstract class GeweBotAdapter implements BotAdapter {
 
 
     @Override
-    public boolean login() {
-        return false;
+    public User login() {
+        return null;
     }
 
     @Override

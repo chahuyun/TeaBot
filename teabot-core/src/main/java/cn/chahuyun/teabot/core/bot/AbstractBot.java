@@ -1,8 +1,9 @@
 package cn.chahuyun.teabot.core.bot;
 
-import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.api.bot.BotAdapter;
 import cn.chahuyun.teabot.api.contact.Bot;
 import cn.chahuyun.teabot.api.contact.Friend;
+import cn.chahuyun.teabot.api.contact.User;
 import cn.chahuyun.teabot.common.conf.bot.BotType;
 
 /**
@@ -12,16 +13,17 @@ import cn.chahuyun.teabot.common.conf.bot.BotType;
  * @date 2025-2-21 14:34
  */
 @SuppressWarnings("FieldCanBeLocal")
-public abstract class AbstractBot implements Bot {
+public abstract class AbstractBot implements Bot, User {
 
     private final BotType botType;
     private final BotAdapter adapter;
-    private final String id;
+    private String id;
+    private String name;
+    private String avatar;
 
     public AbstractBot(BotAdapter adapter, BotType botType) {
         this.adapter = adapter;
         this.botType = botType;
-        this.id = adapter.getId();
     }
 
     /**
@@ -58,9 +60,14 @@ public abstract class AbstractBot implements Bot {
      */
     @Override
     public void login() {
-        if (!adapter.login()) {
+        User login = adapter.login();
+
+        if (login == null) {
             throw new RuntimeException("登录失败");
         }
+        this.id = login.getId();
+        this.name = login.getName();
+        this.avatar = login.getAvatar();
     }
 
     /**
@@ -82,4 +89,21 @@ public abstract class AbstractBot implements Bot {
         return adapter.getFriend(id);
     }
 
+    /**
+     * 获取机器人名称
+     * @return String
+     */
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * 获取机器人头像
+     * @return String
+     */
+    @Override
+    public String getAvatar() {
+        return this.avatar;
+    }
 }

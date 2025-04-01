@@ -1,7 +1,7 @@
 package cn.chahuyun.teabot.api.contact;
 
 
-import cn.chahuyun.teabot.api.config.BotAdapter;
+import cn.chahuyun.teabot.api.bot.BotAdapter;
 
 /**
  * bot抽象层

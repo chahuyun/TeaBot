@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static cn.chahuyun.teabot.adapter.http.HttpUtil.gson;
 
@@ -216,15 +217,23 @@ public class PadPlusHttpUtil {
     private static void debug(String wxid, String msg, Results results) {
         JsonElement data = results.getData();
         if (!data.isJsonNull()) {
-            JsonObject json = data.getAsJsonObject();
+            // 深拷贝原始 JSON 数据
+            JsonObject originalJson = data.getAsJsonObject();
+            JsonObject json = new JsonObject();
+            for (Map.Entry<String, JsonElement> entry : originalJson.entrySet()) {
+                json.add(entry.getKey(), entry.getValue().deepCopy());
+            }
+
+            // 修改副本，不影响原始数据
             if (json.has("KeyBuf")) {
                 json.remove("KeyBuf");
             } else if (json.has("QrBase64")) {
                 json.remove("QrBase64");
             }
-//            else if (json.has("QrCode")) {
-//                json.remove("QrCode");
-//            }
+//        else if (json.has("QrCode")) {
+//            json.remove("QrCode");
+//        }
+
             log.debug("wxid->{},{}:,返回信息:{}", wxid, msg, json);
         } else {
             log.debug("wxid->{},{}:,返回信息:{}", wxid, msg, "");
